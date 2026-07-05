@@ -104,9 +104,11 @@ input:focus,select:focus{border-color:var(--vi)}
 
   <div id="gate" class="gate">
     <h1>Show the raven <span class="irid">your bag.</span></h1>
-    <p>Paste any Solana address. RAVEN reads its real holdings — no connect, no signature, nothing to approve.
-    Empty wallets get a paper demo bag. Everything here is paper until the audit; prices are live.</p>
-    <div class="row"><input id="gw" maxlength="44" placeholder="SOLANA WALLET ADDRESS"><button class="btn main" id="gGo">LOAD</button></div>
+    <p>Connect and RAVEN reads your real holdings, priced live. <b style="color:var(--ink)">No signatures, ever</b> — connecting only shares your address.
+    Empty wallets get a paper demo bag. Everything here is paper until the audit.</p>
+    <button class="btn main" id="gConnect" style="padding:15px 40px;font-size:15px">CONNECT WALLET</button>
+    <div style="margin-top:16px"><a href="#" id="gPasteLink" class="small" style="color:var(--mut);text-decoration:underline">or paste any address (watch mode)</a></div>
+    <div class="row" id="gPasteRow" style="display:none;margin-top:14px"><input id="gw" maxlength="44" placeholder="SOLANA WALLET ADDRESS"><button class="btn ghost" id="gGo">LOAD</button></div>
   </div>
 
   <div id="appCols" class="cols" style="display:none">
@@ -165,6 +167,7 @@ async function boot(){
   renderTierCards();
   await refreshCatalog();await refreshStats();await refreshTape();
   if(WALLET){$('#gw').value=WALLET;load()}
+  else if(localStorage.ravenConnected==='1')connectWallet(true);   // eager reconnect, no popup
   wsConnect();
   setInterval(refreshCatalog,20000);setInterval(refreshStats,15000);setInterval(()=>{if(ACC)refreshAccount()},12000);
 }
@@ -256,6 +259,19 @@ window.protect=async id=>{try{await api('/api/protect',{wallet:WALLET,loan:id,tp
 window.repay=async id=>{try{await api('/api/repay',{wallet:WALLET,loan:id});toast('repaid — the raven remembers the good ones');refreshAccount()}catch(e){toast(e.message,1)}};
 window.closeSell=async id=>{try{await api('/api/close',{wallet:WALLET,loan:id});toast('closed via sell — surplus returned');refreshAccount()}catch(e){toast(e.message,1)}};
 
+function walletProvider(){return (window.phantom&&window.phantom.solana)||window.solana||window.solflare||null}
+async function connectWallet(eager){
+  const prov=walletProvider();
+  if(!prov){if(!eager){toast('no wallet extension found — use watch mode below',1);$('#gPasteRow').style.display='flex'}return}
+  try{
+    const r=await prov.connect(eager?{onlyIfTrusted:true}:undefined);
+    const pk=((r&&r.publicKey)||prov.publicKey).toString();
+    $('#gw').value=pk;localStorage.ravenConnected='1';
+    await load();
+  }catch(e){if(!eager)toast('connect cancelled',1)}
+}
+$('#gConnect').onclick=()=>connectWallet(false);
+$('#gPasteLink').onclick=e=>{e.preventDefault();$('#gPasteRow').style.display='flex';$('#gw').focus()};
 $('#gGo').onclick=load;$('#gw').addEventListener('keydown',e=>{if(e.key==='Enter')load()});
 $('#bAmt').addEventListener('input',quoteSoon);$('#bTok').addEventListener('change',quote);
 $('#bMax').onclick=()=>{const c=CATALOG.find(x=>x.mint===$('#bTok').value);if(!c||!ACC)return;const v=ACC.vault[c.sym];if(v){$('#bAmt').value=v.free;quote()}};
