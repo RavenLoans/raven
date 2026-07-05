@@ -1,0 +1,63 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,650;0,9..144,750;1,9..144,550&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"><style>
+:root{--bg:#eef0f6;--panel:#fbfcff;--panel2:#e6e8f2;--ink:#151625;--sub:#48485f;--mut:#7a7b95;--dim:#a4a4bd;
+  --teal:#12b39a;--vi:#6a4be0;--mag:#c74dea;--warn:#cf7a2c;--bad:#c93b52;
+  --line:rgba(21,22,37,.12);--line2:rgba(21,22,37,.22);}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#eef0f6;overflow:hidden;-webkit-font-smoothing:antialiased}
+.stage{position:relative;overflow:hidden;background:
+  radial-gradient(58% 46% at 80% -6%,rgba(106,75,224,.16),transparent 60%),
+  radial-gradient(50% 44% at 6% 10%,rgba(18,179,154,.12),transparent 60%),
+  radial-gradient(64% 52% at 52% 116%,rgba(199,77,234,.11),transparent 66%),
+  #eef0f6}
+.fr{font-family:'Fraunces',serif}.mo{font-family:'JetBrains Mono',monospace}
+.grad{background:linear-gradient(110deg,var(--teal) 6%,var(--vi) 52%,var(--mag) 96%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tok{color:var(--vi)}
+.eyebrow{font-family:'JetBrains Mono',monospace;letter-spacing:.34em;color:var(--vi);text-transform:uppercase}
+.dust{position:absolute;inset:0;opacity:.6;pointer-events:none;background-image:
+  radial-gradient(2px 2px at 12% 22%,rgba(106,75,224,.22),transparent),
+  radial-gradient(2px 2px at 78% 12%,rgba(18,179,154,.2),transparent),
+  radial-gradient(2px 2px at 34% 66%,rgba(199,77,234,.16),transparent),
+  radial-gradient(2px 2px at 88% 54%,rgba(106,75,224,.18),transparent),
+  radial-gradient(2px 2px at 24% 46%,rgba(21,22,37,.1),transparent),
+  radial-gradient(2px 2px at 60% 82%,rgba(18,179,154,.16),transparent)}
+
+  .stage{width:2400px;height:1350px}
+  .wrap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 120px;gap:30px}
+  .top{display:flex;align-items:center;gap:34px}
+  .h{font-family:'Fraunces';font-weight:650;font-size:82px;letter-spacing:-.02em}
+  table{width:100%;border-collapse:separate;border-spacing:0 14px}
+  th{font-family:'JetBrains Mono';font-size:27px;letter-spacing:.1em;text-align:left;padding:0 32px;color:var(--mut)}
+  th.b{color:var(--vi)}
+  td{padding:24px 32px;font-size:30px;line-height:1.4;vertical-align:middle}
+  td.f{font-family:'Fraunces';font-weight:650;font-size:31px;color:var(--ink);width:22%;background:var(--panel);border:1px solid var(--line);border-right:none;border-radius:16px 0 0 16px}
+  td.a{color:#8a8aa0;width:37%;background:rgba(201,59,82,.05);border:1px solid rgba(201,59,82,.16);border-left:none;border-right:none}
+  td.b{color:var(--ink);width:41%;background:rgba(18,179,154,.08);border:2px solid rgba(18,179,154,.32);border-left:none;border-radius:0 16px 16px 0}
+  td.b b{color:var(--teal)}
+  .x{color:var(--bad);font-weight:800;margin-right:16px} .c{color:var(--teal);font-weight:800;margin-right:16px}
+  .foot{font-family:'JetBrains Mono';font-size:25px;color:var(--mut);text-align:center;letter-spacing:.03em}</style></head>
+  <body><div class="stage"><div class="dust"></div><div class="wrap">
+     <div class="top"><svg width="128" height="128" viewBox="0 0 120 120" style="filter:drop-shadow(0 12px 40px rgba(106,75,224,.26))">
+    <defs><linearGradient id="ovs" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#12b39a"/><stop offset=".5" stop-color="#6a4be0"/><stop offset="1" stop-color="#c74dea"/></linearGradient></defs>
+    <path fill="url(#ovs)" d="
+      M4,49
+      L47,42
+      C50,23 71,15 90,25
+      C105,33 107,55 96,69
+      C89,79 77,83 64,80
+      C67,72 65,67 60,63
+      L46,57
+      L4,49 Z"/>
+    <circle cx="75" cy="43" r="3.6" fill="#0c0a16"/>
+    <circle cx="76.4" cy="41.7" r="1.1" fill="#eef0f6"/>
+  </svg><div><div class="eyebrow" style="font-size:28px;margin-bottom:8px">◆ why not the other bird ◆</div><div class="h">Same mechanics. <span class="grad">Different spine.</span></div></div></div>
+     <table>
+       <tr><th></th><th>THE OTHER BIRD</th><th class="b">RAVEN</th></tr>
+       <tr><td class="f">Custody</td><td class="a"><span class="x">✗</span>Your wallet IS the bot wallet — keys in a Telegram bot</td><td class="b"><span class="c">✓</span><b>Zero keys held</b> — connect never asks for a signature</td></tr>
+       <tr><td class="f">Surface</td><td class="a"><span class="x">✗</span>Lives in a chat window</td><td class="b"><span class="c">✓</span><b>Web-first</b> — full dashboard, positions, live ledger</td></tr>
+       <tr><td class="f">Keeper</td><td class="a"><span class="x">✗</span>Ticks every ~90 seconds</td><td class="b"><span class="c">✓</span><b>Every 15 seconds</b> — 6× faster to your stop</td></tr>
+       <tr><td class="f">Proof</td><td class="a"><span class="x">✗</span>Trust the bot</td><td class="b"><span class="c">✓</span><b>Read the ledger</b> — every action is a public receipt</td></tr>
+     </table>
+     <div class="foot">we even accept their token as collateral. no hard feelings. 🪶 · ravenonsol.xyz</div>
+   </div></div></body></html>
