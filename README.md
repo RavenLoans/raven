@@ -9,6 +9,8 @@ on-chain credit score with every clean repay.
 
 **Live:** [ravenloans.xyz](https://ravenloans.xyz) · **X:** [@RavenLoans](https://x.com/RavenLoans)
 
+**$RAVEN CA:** `irP71XdKsT39Mmntx3STCqwMhrUsfC9bWNeB8tGpump`
+
 ---
 
 ## What makes it different

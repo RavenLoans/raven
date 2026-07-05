@@ -14,7 +14,7 @@ const ROOT = path.join(__dirname, '..');
 const CLIENT = path.join(ROOT, 'client');
 const DATA_PATH = process.env.DATA_PATH || path.join(ROOT, 'data.json');
 const TOKEN = 'RAVEN';
-const MINT = process.env.RAVEN_MINT || '';
+const MINT = process.env.RAVEN_MINT || 'irP71XdKsT39Mmntx3STCqwMhrUsfC9bWNeB8tGpump';
 const RPC = process.env.RPC_URL || 'https://api.mainnet-beta.solana.com';
 const PRICE_URL = 'https://lite-api.jup.ag/price/v3?ids=';
 const SOL_MINT = 'So11111111111111111111111111111111111111112';

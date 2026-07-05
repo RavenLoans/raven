@@ -198,6 +198,8 @@ footer .fm{font-family:'Fraunces';font-weight:750;font-size:16px;color:var(--ink
         <a class="gpill" href="#borrow"><span id="tokCount">19</span> tokens</a>
       </div>
       <p class="micro">No wallet handy? <a href="/app">Watch any address →</a></p>
+      <div class="ca" id="ca" title="copy contract address" style="display:none;margin-top:16px;align-items:center;gap:10px;cursor:pointer;font-family:'JetBrains Mono';font-size:12.5px;background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:8px 16px;width:fit-content">
+        <span style="font-weight:700;color:var(--vi);letter-spacing:.1em">$RAVEN CA</span><span id="cav" style="color:var(--sub)">—</span><span id="cacopy" style="color:var(--dim)">⧉</span></div>
       <div class="live">
         <span><b id="lLoans">—</b> loans</span><span><b id="lSol">—</b> SOL borrowed</span>
         <span><b id="lAcc">—</b> ravens</span><span><b id="lFees">—</b> SOL fees split</span>
@@ -350,6 +352,11 @@ footer .fm{font-family:'Fraunces';font-weight:750;font-size:16px;color:var(--ink
 <script>
 fetch('/api/stats').then(r=>r.json()).then(s=>{
   lLoans.textContent=s.loansTotal;lSol.textContent=s.borrowedSol;lAcc.textContent=s.accounts;lFees.textContent=s.fees.total;
+}).catch(()=>{});
+fetch('/api/config').then(r=>r.json()).then(cfg=>{
+  if(cfg.mint){const ca=document.getElementById('ca');ca.style.display='flex';
+    document.getElementById('cav').textContent=cfg.mint.slice(0,5)+'…'+cfg.mint.slice(-5);
+    ca.onclick=()=>{navigator.clipboard.writeText(cfg.mint);document.getElementById('cacopy').textContent='copied ✓';setTimeout(()=>document.getElementById('cacopy').textContent='⧉',1400)}}
 }).catch(()=>{});
 const fmtPx=p=>'$'+(p>=1?p.toLocaleString(undefined,{maximumFractionDigits:2}):Number(p.toPrecision(2)).toString());
 fetch('/api/catalog').then(r=>r.json()).then(c=>{
