@@ -145,7 +145,7 @@ input:focus,select:focus{border-color:var(--vi)}
     <div class="top">
       <span class="wpill" id="wpill"><span class="d"></span><span id="wtext">No wallet connected</span></span>
       <div class="tr">
-        <span class="paper">PAPER · REAL PRICES</span>
+        <span class="paper">LIVE PRICES</span>
         <button class="btn gh sm" id="btnWatch">Watch address</button>
         <button class="btn acc" id="btnConnect">Connect Wallet</button>
       </div>
@@ -243,6 +243,7 @@ async function api(p,body){const r=await fetch(p,body?{method:'POST',headers:{'c
 async function boot(){
   const cfg=await api('/api/config');TIERS=cfg.tiers;
   await refreshCatalog();renderTierCards();await refreshTape();drawGauge(0);
+  const qw=new URLSearchParams(location.search).get('wallet');if(qw)WALLET=qw;
   if(WALLET)load(WALLET);
   else if(localStorage.ravenConnected==='1')connectWallet(true);
   wsConnect();
