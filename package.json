@@ -1,0 +1,8 @@
+{
+  "name": "raven",
+  "version": "1.0.0",
+  "description": "RAVEN — borrow against your bag. the raven remembers.",
+  "main": "server/index.js",
+  "scripts": { "start": "node server/index.js" },
+  "engines": { "node": ">=18" }
+}

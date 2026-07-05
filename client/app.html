@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAVEN — app</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08080d;--panel:rgba(18,17,26,.82);--panel2:rgba(24,22,34,.9);--ink:#efeef5;--sub:#b8b4c8;--mut:#7d7890;--dim:#4c4860;
+  --teal:#4de3c0;--vi:#8b7bff;--mag:#e07bff;--line:rgba(139,123,255,.2);--line2:rgba(139,123,255,.45);--warn:#ffc35c;--bad:#ff6d7a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif}
+.sy{font-family:'Syne',sans-serif}.mo{font-family:'JetBrains Mono',monospace}
+a{color:inherit;text-decoration:none}
+.irid{background:linear-gradient(110deg,var(--teal),var(--vi) 55%,var(--mag));-webkit-background-clip:text;background-clip:text;color:transparent}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:
+  radial-gradient(50% 38% at 84% -6%,rgba(139,123,255,.11),transparent 60%),
+  radial-gradient(50% 42% at 6% 108%,rgba(77,227,192,.06),transparent 62%)}
+.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 18px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+.mark{display:flex;align-items:center;gap:10px;font-family:'Syne';font-weight:800;font-size:18px}
+.strip{display:flex;gap:20px;font-family:'JetBrains Mono';font-size:11.5px;color:var(--mut);letter-spacing:.08em;flex-wrap:wrap}
+.strip b{color:var(--teal)}
+.paper{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.14em;color:var(--warn);border:1px solid rgba(255,195,92,.35);border-radius:999px;padding:4px 11px}
+
+.cols{display:grid;grid-template-columns:1fr 340px;gap:18px;padding:20px 0 60px}
+@media(max-width:960px){.cols{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+.pt{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.2em;color:var(--vi);text-transform:uppercase;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.pt .r{color:var(--mut);letter-spacing:.04em;text-transform:none}
+
+input,select{background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--ink);font-family:'JetBrains Mono';font-size:14px;padding:11px 13px;outline:none;width:100%}
+input:focus,select:focus{border-color:var(--vi)}
+.btn{display:inline-block;padding:11px 20px;border-radius:8px;font-family:'Syne';font-weight:700;font-size:12.5px;letter-spacing:.06em;cursor:pointer;border:none;transition:.15s}
+.btn.main{background:linear-gradient(110deg,var(--teal),var(--vi) 60%,var(--mag));color:#0a0a12}
+.btn.main:hover{box-shadow:0 4px 26px rgba(139,123,255,.4)}
+.btn.main:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btn.ghost{border:1px solid var(--line2);background:transparent;color:var(--sub)}
+.btn.ghost:hover{color:var(--ink)}
+.btn.warn{background:rgba(255,109,122,.14);border:1px solid rgba(255,109,122,.4);color:var(--bad)}
+
+.gate{max-width:560px;margin:70px auto;text-align:center}
+.gate h1{font-family:'Syne';font-weight:800;font-size:34px;margin-bottom:10px}
+.gate p{color:var(--sub);font-size:14.5px;margin-bottom:24px;line-height:1.6}
+.gate .row{display:flex;gap:10px}
+
+.vault .tok{display:grid;grid-template-columns:70px 1fr 1fr 1fr auto;gap:8px;align-items:center;padding:10px 6px;border-bottom:1px solid rgba(139,123,255,.08);font-size:13.5px}
+.vault .tok .s{font-family:'Syne';font-weight:700}
+.vault .tok .k{font-family:'JetBrains Mono';font-size:12.5px;color:var(--sub)}
+.vault .tok .k b{color:var(--ink)}
+
+.tiers3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.t3{border:1px solid var(--line);border-radius:10px;padding:13px;text-align:center;cursor:pointer;transition:.15s}
+.t3:hover{border-color:var(--line2)}
+.t3.sel{border-color:var(--teal);background:rgba(77,227,192,.06)}
+.t3 .tn{font-family:'Syne';font-weight:700;font-size:14px}
+.t3 .tl{font-family:'JetBrains Mono';font-size:20px;font-weight:700;margin:4px 0}
+.t3 .td{font-size:11px;color:var(--mut)}
+.quote{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono';font-size:13px;line-height:2;color:var(--sub)}
+.quote b{color:var(--ink)} .quote .hl{color:var(--teal)} .quote .lq{color:var(--warn)}
+
+.loan{border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px;background:var(--panel2)}
+.loan .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.loan .sym{font-family:'Syne';font-weight:700;font-size:16px}
+.loan .st{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.12em;padding:3px 10px;border-radius:999px}
+.st.open{color:var(--teal);border:1px solid rgba(77,227,192,.4)}
+.st.repaid,.st.sold{color:var(--vi);border:1px solid var(--line2)}
+.st.protected{color:var(--warn);border:1px solid rgba(255,195,92,.4)}
+.st.liquidated{color:var(--bad);border:1px solid rgba(255,109,122,.4)}
+.loan .rows{font-family:'JetBrains Mono';font-size:12.5px;color:var(--sub);line-height:1.9}
+.loan .rows b{color:var(--ink)}
+.health{height:7px;border-radius:4px;background:rgba(255,255,255,.06);margin:10px 0;overflow:hidden}
+.health i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--bad),var(--warn) 45%,var(--teal) 75%)}
+.pr{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.pr input{width:110px;padding:8px 10px;font-size:12px}
+.pr .lbl{font-family:'JetBrains Mono';font-size:11px;color:var(--mut)}
+
+.credit{text-align:center}
+.credit .score{font-family:'JetBrains Mono';font-weight:700;font-size:46px}
+.credit .tiern{font-family:'Syne';font-weight:700;font-size:15px;margin:4px 0 10px}
+.credit .hist{font-family:'JetBrains Mono';font-size:11.5px;color:var(--mut);line-height:1.9}
+.tape{max-height:520px;overflow-y:auto}
+.rc{border-bottom:1px solid rgba(139,123,255,.08);padding:10px 2px;font-size:12px}
+.rc .a{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--vi)}
+.rc .a.liquidate{color:var(--bad)} .rc .a.auto_sell{color:var(--warn)} .rc .a.borrow{color:var(--teal)}
+.rc .s{color:var(--sub);line-height:1.5;margin-top:3px}
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:13px 22px;font-family:'JetBrains Mono';font-size:13px;transition:.25s;opacity:0;z-index:50}
+#toast.show{transform:translateX(-50%);opacity:1}
+#toast.err{border-color:rgba(255,109,122,.5);color:var(--bad)}
+.mut{color:var(--mut)} .small{font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="mark" href="/"><svg width="26" height="26" viewBox="0 0 32 32"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4de3c0"/><stop offset=".5" stop-color="#8b7bff"/><stop offset="1" stop-color="#e07bff"/></linearGradient></defs><path d="M4 20 C7 8 20 4 29 7 L20 11 L28 13 L17 15 C14 22 9 25 3 27 C6 24 7 22 7.4 20.8 Z" fill="url(#rg)"/><circle cx="20.6" cy="8.8" r="1.3" fill="#08080d"/></svg>RAVEN</a>
+    <div class="strip">
+      <span>SOL <b id="sSol">—</b></span><span>OPEN <b id="sOpen">—</b></span>
+      <span>BORROWED <b id="sBor">—</b></span><span>LP UTIL <b id="sUtil">—</b></span>
+      <span class="paper">PAPER · REAL PRICES</span>
+    </div>
+  </header>
+
+  <div id="gate" class="gate">
+    <h1>Show the raven <span class="irid">your bag.</span></h1>
+    <p>Paste any Solana address. RAVEN reads its real holdings — no connect, no signature, nothing to approve.
+    Empty wallets get a paper demo bag. Everything here is paper until the audit; prices are live.</p>
+    <div class="row"><input id="gw" maxlength="44" placeholder="SOLANA WALLET ADDRESS"><button class="btn main" id="gGo">LOAD</button></div>
+  </div>
+
+  <div id="appCols" class="cols" style="display:none">
+    <div>
+      <div class="panel vault" style="margin-bottom:18px">
+        <div class="pt">YOUR VAULT <span class="r" id="vWho">—</span></div>
+        <div id="vRows"></div>
+        <div class="small mut" style="margin-top:10px">SOL balance (paper): <b class="mo" id="vSol" style="color:var(--teal)">0</b> · re-LOAD anytime to refresh your real bag</div>
+      </div>
+
+      <div class="panel" style="margin-bottom:18px">
+        <div class="pt">BORROW</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px">
+          <select id="bTok"></select>
+          <input id="bAmt" type="number" min="0" placeholder="AMOUNT">
+          <button class="btn ghost" id="bMax">MAX</button>
+        </div>
+        <div class="tiers3" id="bTiers"></div>
+        <div class="quote" id="bQuote">pick a token, an amount, and a tier — the full quote (including your liquidation price) appears before you commit.</div>
+        <div style="margin-top:12px;text-align:right"><button class="btn main" id="bGo" disabled>BORROW</button></div>
+      </div>
+
+      <div class="panel">
+        <div class="pt">POSITIONS <span class="r" id="pCount"></span></div>
+        <div id="pRows"><div class="small mut">no loans yet — the ledger awaits.</div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel credit" style="margin-bottom:18px">
+        <div class="pt" style="justify-content:center">CREDIT — THE RAVEN REMEMBERS</div>
+        <div class="score irid" id="cScore">—</div>
+        <div class="tiern" id="cTier">—</div>
+        <div class="hist" id="cHist"></div>
+      </div>
+      <div class="panel">
+        <div class="pt">LEDGER — LIVE RECEIPTS</div>
+        <div class="tape" id="tape"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+const $=s=>document.querySelector(s);
+const fmt=(x,d=4)=>x==null?'—':(+x).toLocaleString(undefined,{maximumFractionDigits:d});
+const px=p=>p==null?'—':'$'+(p<0.01?p.toExponential(3):p.toFixed(4));
+let CATALOG=[],ACC=null,TIER='standard',TIERS={},WALLET=localStorage.ravenWallet||'';
+let toastT;function toast(m,err){const t=$('#toast');t.textContent=m;t.className='show'+(err?' err':'');clearTimeout(toastT);toastT=setTimeout(()=>t.className='',3400)}
+async function api(p,body){const r=await fetch(p,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:{});const j=await r.json();if(!r.ok)throw new Error(j.error||'request failed');return j}
+
+async function boot(){
+  const cfg=await api('/api/config');TIERS=cfg.tiers;
+  renderTierCards();
+  await refreshCatalog();await refreshStats();await refreshTape();
+  if(WALLET){$('#gw').value=WALLET;load()}
+  wsConnect();
+  setInterval(refreshCatalog,20000);setInterval(refreshStats,15000);setInterval(()=>{if(ACC)refreshAccount()},12000);
+}
+async function refreshCatalog(){const c=await api('/api/catalog');CATALOG=c.catalog;$('#sSol').textContent='$'+fmt(c.solUsd,2)}
+async function refreshStats(){const s=await api('/api/stats');$('#sOpen').textContent=s.loansOpen;$('#sBor').textContent=fmt(s.borrowedSol,2);$('#sUtil').textContent=(s.lp.utilization*100).toFixed(1)+'%'}
+async function refreshTape(){const r=await api('/api/receipts?n=30');$('#tape').innerHTML=r.receipts.map(rcHtml).join('')}
+const rcHtml=rc=>`<div class="rc"><span class="a ${rc.action}">${rc.action.replace('_',' ')}</span><div class="s">${esc(rc.summary||'')}</div></div>`;
+const esc=s=>String(s).replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+
+async function load(){
+  const w=$('#gw').value.trim();
+  if(!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(w))return toast('that is not a solana address',1);
+  $('#gGo').textContent='READING…';
+  try{
+    const ref=new URLSearchParams(location.search).get('ref');
+    const r=await api('/api/register',{wallet:w,ref});
+    WALLET=w;localStorage.ravenWallet=w;ACC=r.account;
+    $('#gate').style.display='none';$('#appCols').style.display='';
+    render();toast('the raven has read your bag');
+  }catch(e){toast(e.message,1)}
+  $('#gGo').textContent='LOAD';
+}
+async function refreshAccount(){try{const r=await api('/api/account?wallet='+WALLET);if(r.account){ACC=r.account;render()}}catch(e){}}
+
+function render(){
+  if(!ACC)return;
+  $('#vWho').textContent=WALLET.slice(0,4)+'…'+WALLET.slice(-4)+(ACC.vault&&Object.keys(ACC.vault).length&&ACC.loans?'':'');
+  $('#vSol').textContent=fmt(ACC.sol,4);
+  // vault
+  const rows=Object.entries(ACC.vault).map(([sym,v])=>`
+    <div class="tok"><span class="s">${sym}</span>
+      <span class="k">free <b>${fmt(v.free)}</b></span>
+      <span class="k">locked <b>${fmt(v.locked)}</b></span>
+      <span class="k">${px(v.priceUsd)}</span>
+      <span class="k">≈ <b>$${fmt(v.free*v.priceUsd,0)}</b> free</span></div>`).join('');
+  $('#vRows').innerHTML=rows||'<div class="small mut">nothing the catalog recognizes — demo bag incoming on next LOAD.</div>';
+  // borrow select
+  const opts=Object.entries(ACC.vault).filter(([,v])=>v.free>0&&v.priceUsd>0)
+    .map(([sym,v])=>{const c=CATALOG.find(x=>x.sym===sym);return `<option value="${c?c.mint:''}">${sym} — ${fmt(v.free)} free</option>`}).join('');
+  const prev=$('#bTok').value;$('#bTok').innerHTML=opts;if(prev)$('#bTok').value=prev;
+  // credit
+  $('#cScore').textContent=ACC.credit;$('#cTier').textContent=ACC.creditTier;
+  $('#cHist').innerHTML=`repaid ${ACC.history.repaid} · protected ${ACC.history.protected} · liquidated ${ACC.history.liquidated}<br>referral earned ${fmt(ACC.refEarned,4)} SOL`;
+  // positions
+  const open=ACC.loans.filter(l=>l.status==='open'),closed=ACC.loans.filter(l=>l.status!=='open').slice(0,6);
+  $('#pCount').textContent=open.length+' open';
+  $('#pRows').innerHTML=(open.map(loanHtml).join('')+(closed.length?`<div class="pt" style="margin-top:16px">RECENT HISTORY</div>`+closed.map(loanHtml).join(''):''))||'<div class="small mut">no loans yet — the ledger awaits.</div>';
+  quote();
+}
+function loanHtml(l){
+  const openL=l.status==='open';
+  const due=openL?Math.max(0,l.dueAt-Date.now()):0;
+  const dueTxt=openL?(due>86400000?Math.floor(due/86400000)+'d '+Math.floor(due%86400000/3600000)+'h':Math.floor(due/3600000)+'h '+Math.floor(due%3600000/60000)+'m'):'';
+  return `<div class="loan">
+    <div class="top"><span class="sym">${l.sym} <span class="mo small mut">× ${fmt(l.amount)}</span></span><span class="st ${l.status}">${l.status.toUpperCase()}</span></div>
+    ${openL?`<div class="health"><i style="width:${Math.min(100,Math.max(3,(l.healthPct-100)/1.5+50))}%"></i></div>`:''}
+    <div class="rows">
+      debt <b>${l.debt} SOL</b> · now ${px(l.priceUsd)} · liq <b style="color:var(--warn)">${px(l.liqPriceUsd)}</b>${openL?` · health <b>${l.healthPct==null?'—':l.healthPct+'%'}</b> · due <b>${dueTxt}</b>`:''}
+      ${l.tp||l.sl?`<br>protect: tp ${l.tp?px(l.tp):'—'} · sl ${l.sl?px(l.sl):'—'}`:''}
+    </div>
+    ${openL?`<div class="pr">
+      <span class="lbl">TP $</span><input type="number" id="tp_${l.id}" value="${l.tp||''}" placeholder="—">
+      <span class="lbl">SL $</span><input type="number" id="sl_${l.id}" value="${l.sl||''}" placeholder="—">
+      <button class="btn ghost" onclick="protect('${l.id}')">ARM</button>
+      <button class="btn main" onclick="repay('${l.id}')">REPAY ${l.debt}</button>
+      <button class="btn warn" onclick="closeSell('${l.id}')">CLOSE VIA SELL</button>
+    </div>`:''}
+  </div>`;
+}
+function renderTierCards(){
+  $('#bTiers').innerHTML=Object.entries(TIERS).map(([k,t])=>`
+    <div class="t3 ${k===TIER?'sel':''}" onclick="setTier('${k}')">
+      <div class="tn">${t.label}</div><div class="tl irid">${(t.ltv*100).toFixed(0)}%</div>
+      <div class="td">${t.days}d · ${(t.feeBps/100).toFixed(2)}% fee</div></div>`).join('');
+}
+window.setTier=k=>{TIER=k;renderTierCards();quote()};
+let qT;function quoteSoon(){clearTimeout(qT);qT=setTimeout(quote,300)}
+async function quote(){
+  const mint=$('#bTok').value,amt=+$('#bAmt').value;
+  if(!mint||!(amt>0)){$('#bGo').disabled=true;return}
+  try{
+    const q=await api(`/api/quote?mint=${mint}&amount=${amt}&tier=${TIER}&credit=${ACC?ACC.credit:300}`);
+    $('#bQuote').innerHTML=`you receive <b class="hl">${q.principal} SOL</b> now · fee <b>${q.fee}</b> · repay <b>${q.debt} SOL</b> within <b>${q.days}d</b><br>`+
+      `liquidation if price hits <b class="lq">${px(q.liqPriceUsd)}</b> (now ${px(q.priceUsd)}) · credit tier <b>${q.creditTier}</b> (ltv ${(q.ltv*100).toFixed(1)}%)`;
+    $('#bGo').disabled=false;
+  }catch(e){$('#bQuote').textContent=e.message;$('#bGo').disabled=true}
+}
+window.protect=async id=>{try{await api('/api/protect',{wallet:WALLET,loan:id,tp:+document.getElementById('tp_'+id).value||0,sl:+document.getElementById('sl_'+id).value||0});toast('auto-protect armed — the keeper watches');refreshAccount()}catch(e){toast(e.message,1)}};
+window.repay=async id=>{try{await api('/api/repay',{wallet:WALLET,loan:id});toast('repaid — the raven remembers the good ones');refreshAccount()}catch(e){toast(e.message,1)}};
+window.closeSell=async id=>{try{await api('/api/close',{wallet:WALLET,loan:id});toast('closed via sell — surplus returned');refreshAccount()}catch(e){toast(e.message,1)}};
+
+$('#gGo').onclick=load;$('#gw').addEventListener('keydown',e=>{if(e.key==='Enter')load()});
+$('#bAmt').addEventListener('input',quoteSoon);$('#bTok').addEventListener('change',quote);
+$('#bMax').onclick=()=>{const c=CATALOG.find(x=>x.mint===$('#bTok').value);if(!c||!ACC)return;const v=ACC.vault[c.sym];if(v){$('#bAmt').value=v.free;quote()}};
+$('#bGo').onclick=async()=>{
+  try{
+    const r=await api('/api/borrow',{wallet:WALLET,mint:$('#bTok').value,amount:+$('#bAmt').value,tier:TIER});
+    ACC=r.account;toast('borrowed '+r.loan.principal+' SOL — liq at '+px(r.loan.liqPriceUsd));$('#bAmt').value='';render();
+  }catch(e){toast(e.message,1)}
+};
+function wsConnect(){
+  const ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host);
+  ws.onmessage=e=>{const m=JSON.parse(e.data);
+    if(m.type==='receipt'){$('#tape').insertAdjacentHTML('afterbegin',rcHtml(m.receipt));const t=$('#tape');while(t.children.length>40)t.lastChild.remove();
+      if(ACC&&m.receipt.wallet&&WALLET&&m.receipt.wallet.includes(WALLET.slice(0,4)))refreshAccount()}
+    if(m.type==='prices'&&ACC)render()};
+  ws.onclose=()=>setTimeout(wsConnect,2500);
+}
+boot();
+</script>
+</body>
+</html>

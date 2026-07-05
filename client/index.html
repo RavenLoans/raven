@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAVEN — borrow against your bag. the raven remembers.</title>
+<meta name="description" content="Web-first lending on Solana: borrow SOL against memecoins and majors, set take-profits and stops on locked collateral, build credit with every repay. Your keys never live in a Telegram bot.">
+<meta property="og:title" content="RAVEN — borrow against your bag">
+<meta property="og:description" content="Collateral that can still sell itself — with a credit score that remembers. Web-first, transparent, receipts for everything.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08080d;--panel:rgba(18,17,26,.78);--ink:#efeef5;--sub:#b8b4c8;--mut:#7d7890;--dim:#4c4860;
+  --teal:#4de3c0;--vi:#8b7bff;--mag:#e07bff;--line:rgba(139,123,255,.2);--line2:rgba(139,123,255,.42);--good:#4de3c0;--warn:#ffc35c;--bad:#ff6d7a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;overflow-x:hidden}
+.sy{font-family:'Syne',sans-serif}.mo{font-family:'JetBrains Mono',monospace}
+a{color:inherit;text-decoration:none}
+.irid{background:linear-gradient(110deg,var(--teal) 8%,var(--vi) 52%,var(--mag) 94%);-webkit-background-clip:text;background-clip:text;color:transparent}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:
+  radial-gradient(50% 38% at 82% -4%,rgba(139,123,255,.13),transparent 60%),
+  radial-gradient(44% 36% at 8% 12%,rgba(77,227,192,.07),transparent 60%),
+  radial-gradient(60% 48% at 50% 112%,rgba(224,123,255,.07),transparent 64%)}
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 22px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+.mark{display:flex;align-items:center;gap:11px}
+.mark .name{font-family:'Syne';font-weight:800;font-size:21px;letter-spacing:.06em}
+nav{display:flex;gap:22px;align-items:center;font-size:13.5px;color:var(--mut);letter-spacing:.06em}
+nav a:hover{color:var(--ink)}
+.btn{display:inline-block;padding:13px 30px;border-radius:8px;font-family:'Syne';font-weight:700;font-size:14px;letter-spacing:.08em;transition:.2s;cursor:pointer;border:none}
+.btn.main{background:linear-gradient(110deg,var(--teal),var(--vi) 60%,var(--mag));color:#0a0a12}
+.btn.main:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(139,123,255,.4)}
+.btn.ghost{border:1px solid var(--line2);color:var(--sub);background:transparent}
+.btn.ghost:hover{color:var(--ink);border-color:var(--vi)}
+
+.hero{padding:84px 0 60px;text-align:center}
+.paper{display:inline-flex;align-items:center;gap:9px;font-family:'JetBrains Mono';font-size:11.5px;letter-spacing:.18em;color:var(--warn);border:1px solid rgba(255,195,92,.35);border-radius:999px;padding:7px 16px;text-transform:uppercase;margin-bottom:28px}
+.hero h1{font-family:'Syne';font-weight:800;font-size:clamp(40px,7vw,72px);line-height:1.04;letter-spacing:-.01em}
+.hero .tag{margin-top:18px;font-size:clamp(15px,2vw,19px);color:var(--sub);max-width:640px;margin-left:auto;margin-right:auto;line-height:1.6}
+.hero .tag b{color:var(--ink)}
+.cta{margin-top:34px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.live{margin-top:36px;display:flex;gap:30px;justify-content:center;flex-wrap:wrap;font-family:'JetBrains Mono';font-size:12px;letter-spacing:.12em;color:var(--mut);text-transform:uppercase}
+.live b{color:var(--teal);font-size:15px}
+
+.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:13px 0;overflow:hidden;white-space:nowrap}
+.ticker .in{display:inline-block;animation:tick 40s linear infinite;font-family:'JetBrains Mono';font-size:13px;color:var(--sub)}
+.ticker .in b{color:var(--teal)} .ticker .in i{font-style:normal;color:var(--dim);margin:0 16px}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+section{padding:76px 0}
+section h2{font-family:'Syne';font-weight:800;font-size:34px;text-align:center}
+section .sh{font-size:14px;color:var(--mut);text-align:center;margin-top:8px;margin-bottom:44px;letter-spacing:.06em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px;backdrop-filter:blur(8px)}
+.card .n{font-family:'JetBrains Mono';font-size:11px;color:var(--vi);letter-spacing:.22em;margin-bottom:12px}
+.card h3{font-family:'Syne';font-size:18px;margin-bottom:10px}
+.card p{font-size:14.5px;color:var(--sub);line-height:1.6}
+.card p b{color:var(--teal)}
+
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;max-width:900px;margin:0 auto}
+.tier{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:30px;text-align:center;position:relative}
+.tier.hot{border-color:var(--line2);box-shadow:0 0 44px rgba(139,123,255,.12)}
+.tier .tn{font-family:'Syne';font-weight:700;font-size:22px}
+.tier .ltv{font-family:'JetBrains Mono';font-weight:700;font-size:44px;margin:14px 0 2px}
+.tier .ltv small{font-size:16px;color:var(--mut)}
+.tier ul{list-style:none;margin-top:16px;font-size:14px;color:var(--sub);line-height:2}
+.tier .badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(110deg,var(--teal),var(--vi));color:#0a0a12;font-family:'JetBrains Mono';font-size:10px;font-weight:700;letter-spacing:.14em;padding:4px 12px;border-radius:999px}
+
+.vs{max-width:860px;margin:0 auto}
+.vs .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.vs .cell{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 22px;font-size:14.5px;line-height:1.55;color:var(--sub)}
+.vs .cell.them{border-color:rgba(255,109,122,.25)} .vs .cell.them b{color:var(--bad)}
+.vs .cell.us{border-color:rgba(77,227,192,.3)} .vs .cell.us b{color:var(--teal)}
+
+.credit{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.cr{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px 30px;text-align:center;min-width:220px}
+.cr .rng{font-family:'JetBrains Mono';font-size:12px;color:var(--mut);letter-spacing:.14em}
+.cr .nm{font-family:'Syne';font-weight:700;font-size:22px;margin:8px 0}
+.cr .pk{font-size:13.5px;color:var(--sub);line-height:1.7}
+.cr .pk b{color:var(--teal)}
+
+footer{border-top:1px solid var(--line);padding:44px 0 60px;text-align:center;font-size:12.5px;color:var(--dim);line-height:1.8}
+footer .fm{font-family:'Syne';font-weight:800;letter-spacing:.1em;color:var(--mut);margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="mark" href="/">
+      <svg width="30" height="30" viewBox="0 0 32 32"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4de3c0"/><stop offset=".5" stop-color="#8b7bff"/><stop offset="1" stop-color="#e07bff"/></linearGradient></defs><path d="M4 20 C7 8 20 4 29 7 L20 11 L28 13 L17 15 C14 22 9 25 3 27 C6 24 7 22 7.4 20.8 Z" fill="url(#rg)"/><circle cx="20.6" cy="8.8" r="1.3" fill="#08080d"/></svg>
+      <span class="name">RAVEN</span>
+    </a>
+    <nav>
+      <a href="#how">How it works</a><a href="#tiers">Tiers</a><a href="#credit">Credit</a><a href="#vs">Why RAVEN</a>
+      <a class="btn main" style="padding:10px 22px;font-size:12px" href="/app">OPEN APP</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="paper">◆ paper protocol · real prices · custody after audit ◆</div>
+    <h1>Borrow against your bag.<br><span class="irid">The raven remembers.</span></h1>
+    <p class="tag">Web-first lending on Solana: pledge memecoins and majors, take SOL, and set
+      <b>take-profits and stops on collateral while it's locked</b>. Repay well and your on-chain credit
+      unlocks better terms. Every action is a public receipt — and <b>your keys never live in a Telegram bot.</b></p>
+    <div class="cta">
+      <a class="btn main" href="/app">TRY IT AGAINST YOUR REAL BAG</a>
+      <a class="btn ghost" href="#how">HOW IT WORKS</a>
+    </div>
+    <div class="live">
+      <span><b id="lLoans">—</b> loans opened</span>
+      <span><b id="lSol">—</b> SOL borrowed</span>
+      <span><b id="lAcc">—</b> ravens</span>
+      <span><b id="lFees">—</b> SOL fees split</span>
+    </div>
+  </div>
+</div>
+
+<div class="ticker"><div class="in" id="tick">loading the murder…</div></div>
+
+<div class="wrap">
+  <section id="how">
+    <h2>Collateral that can still <span class="irid">sell itself.</span></h2>
+    <div class="sh">the loop, in four moves</div>
+    <div class="grid">
+      <div class="card"><div class="n">01 · PLEDGE</div><h3>Paste your wallet</h3><p>RAVEN reads your <b>real on-chain bag</b> — no connect, no signatures — and prices it live. Empty wallet? You get a paper demo bag to fly with.</p></div>
+      <div class="card"><div class="n">02 · BORROW</div><h3>Take SOL at your tier</h3><p>Express, Quick, or Standard. Your liquidation price is computed and <b>shown before you commit</b> — no surprises, ever.</p></div>
+      <div class="card"><div class="n">03 · PROTECT</div><h3>Arm TP / SL in-loan</h3><p>Your collateral keeps working while pledged: set a take-profit or stop and the keeper — <b>watching every 15 seconds</b> — sells, clears the debt, returns the surplus.</p></div>
+      <div class="card"><div class="n">04 · REMEMBER</div><h3>Build credit</h3><p>Every clean repay raises your score. Score unlocks <b>higher LTV and lower fees</b> — deterministic, published, on the ledger.</p></div>
+    </div>
+  </section>
+
+  <section id="tiers">
+    <h2>Three tiers. <span class="irid">Zero ambiguity.</span></h2>
+    <div class="sh">same tier mechanics the market already knows — executed transparently</div>
+    <div class="tiers">
+      <div class="tier hot"><div class="badge">MOST SOL OUT</div><div class="tn">Express</div><div class="ltv">30<small>% LTV</small></div><ul><li>2-day term</li><li>3.00% fee</li><li>tightest liq buffer</li></ul></div>
+      <div class="tier"><div class="tn">Quick</div><div class="ltv">25<small>% LTV</small></div><ul><li>3-day term</li><li>2.00% fee</li><li>standard buffer</li></ul></div>
+      <div class="tier"><div class="tn">Standard</div><div class="ltv">20<small>% LTV</small></div><ul><li>7-day term</li><li>1.50% fee</li><li>safest terms</li></ul></div>
+    </div>
+  </section>
+
+  <section id="credit">
+    <h2>The raven <span class="irid">remembers.</span></h2>
+    <div class="sh">credit is memory — and memory pays</div>
+    <div class="credit">
+      <div class="cr"><div class="rng">0 – 599</div><div class="nm">Hatchling</div><div class="pk">base terms<br>everyone starts at 300</div></div>
+      <div class="cr"><div class="rng">600 – 799</div><div class="nm">Fledged</div><div class="pk"><b>+2% LTV</b> on every tier<br>earned by repaying</div></div>
+      <div class="cr"><div class="rng">800 – 1000</div><div class="nm">Unkindness</div><div class="pk"><b>+4% LTV · −25bps fee</b><br>the flock's elite</div></div>
+    </div>
+    <p style="text-align:center;margin-top:26px;font-size:13.5px;color:var(--mut)">repay +40 · protected exit +20 · liquidation −250 · all movements published in the receipts</p>
+  </section>
+
+  <section id="vs">
+    <h2>Why not the <span class="irid">other bird?</span></h2>
+    <div class="sh">same mechanics — different spine</div>
+    <div class="vs">
+      <div class="row"><div class="cell them"><b>Them:</b> custodial by design — "your wallet IS the bot wallet," keys live inside a Telegram bot.</div>
+      <div class="cell us"><b>RAVEN:</b> paper custody until audited — real prices, real bags read, zero keys held. Custody ships when it's safe, not when it's convenient.</div></div>
+      <div class="row"><div class="cell them"><b>Them:</b> Telegram-first — the product lives in a chat window.</div>
+      <div class="cell us"><b>RAVEN:</b> web-first — full dashboard, positions, credit, and a live receipt tape in your browser.</div></div>
+      <div class="row"><div class="cell them"><b>Them:</b> liquidation keeper ticks every ~90 seconds.</div>
+      <div class="cell us"><b>RAVEN:</b> keeper ticks every <b>15 seconds</b> — six times faster to your stop.</div></div>
+      <div class="row"><div class="cell them"><b>Them:</b> trust the bot.</div>
+      <div class="cell us"><b>RAVEN:</b> read the ledger — every borrow, auto-sell, liquidation, and fee split is a public receipt.</div></div>
+    </div>
+    <p style="text-align:center;margin-top:24px;font-family:'JetBrains Mono';font-size:12.5px;color:var(--dim)">we even accept their token as collateral. no hard feelings. 🪶</p>
+  </section>
+
+  <section style="text-align:center">
+    <h2>Fees feed the <span class="irid">flock.</span></h2>
+    <div class="sh">every loan fee splits, on the ledger</div>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-family:'JetBrains Mono';font-size:14px">
+      <span class="card" style="padding:16px 24px"><b style="color:var(--teal)">70%</b> · $RAVEN holders</span>
+      <span class="card" style="padding:16px 24px"><b style="color:var(--vi)">20%</b> · LP pool</span>
+      <span class="card" style="padding:16px 24px"><b style="color:var(--mag)">5%</b> · referrals</span>
+      <span class="card" style="padding:16px 24px"><b style="color:var(--mut)">5%</b> · protocol</span>
+    </div>
+    <div class="cta" style="margin-top:40px"><a class="btn main" href="/app">ENTER THE UNKINDNESS</a></div>
+  </section>
+</div>
+
+<footer><div class="wrap">
+  <div class="fm">RAVEN 🪶</div>
+  RAVEN is a paper protocol: prices and wallet reads are real; balances and custody are simulated until the on-chain program is audited.<br>
+  $RAVEN is a memecoin with no promise of value, yield, or profit. Never risk what you can't lose. The raven remembers — so does the chain.
+</div></footer>
+
+<script>
+fetch('/api/stats').then(r=>r.json()).then(s=>{
+  lLoans.textContent=s.loansTotal; lSol.textContent=s.borrowedSol; lAcc.textContent=s.accounts; lFees.textContent=s.fees.total;
+}).catch(()=>{});
+fetch('/api/catalog').then(r=>r.json()).then(c=>{
+  const items=c.catalog.filter(t=>t.enabled).map(t=>`<b>${t.sym}</b> $${t.price<0.01?t.price.toExponential(2):t.price.toFixed(4)}<i>·</i>`).join('');
+  tick.innerHTML=items+items;
+}).catch(()=>{});
+</script>
+</body>
+</html>
