@@ -11,9 +11,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,650;0,9..144,750;1,9..144,550&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f7f4ec;--panel:#fffdf7;--panel2:#f2eee2;--ink:#17141f;--sub:#4e4963;--mut:#847e9a;--line:rgba(23,20,31,.12);--line2:rgba(23,20,31,.2);
-  --vi:#6b57d6;--vi2:#8b7bff;--teal:#0fa88a;--mag:#b84fd6;--warn:#b8860b;--bad:#c93b52;
-  --wash:rgba(107,87,214,.07);--wash2:rgba(15,168,138,.07)}
+:root{--bg:#eef0f6;--panel:#fbfcff;--panel2:#e6e8f2;--ink:#151625;--sub:#48485f;--mut:#7a7b95;--line:rgba(21,22,37,.11);--line2:rgba(21,22,37,.2);
+  --vi:#6a4be0;--vi2:#8b7bff;--teal:#12b39a;--mag:#c74dea;--warn:#cf7a2c;--bad:#c93b52;
+  --wash:rgba(106,75,224,.07);--wash2:rgba(18,179,154,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;overflow-x:hidden}
 .fr{font-family:'Fraunces',serif}.mo{font-family:'JetBrains Mono',monospace}
@@ -27,13 +27,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
   radial-gradient(2px 2px at 52% 34%,rgba(23,20,31,.1),transparent)}
 .wrap{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:0 22px}
 
-header{position:sticky;top:0;z-index:20;background:rgba(247,244,236,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header{position:sticky;top:0;z-index:20;background:rgba(238,240,246,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .hin{display:flex;justify-content:space-between;align-items:center;padding:14px 0}
 .mark{display:flex;align-items:center;gap:10px;font-family:'Fraunces';font-weight:750;font-size:21px;letter-spacing:.01em}
 nav{display:flex;gap:20px;align-items:center;font-size:13.5px;font-weight:500;color:var(--sub)}
 nav a:hover{color:var(--vi)}
 .btn{display:inline-block;padding:12px 26px;border-radius:999px;font-weight:700;font-size:13.5px;letter-spacing:.02em;transition:.18s;cursor:pointer;border:none}
-.btn.main{background:var(--ink);color:#fffdf7}
+.btn.main{background:var(--ink);color:#fbfcff}
 .btn.main:hover{background:var(--vi);transform:translateY(-1px)}
 .btn.soft{background:var(--wash);color:var(--vi);border:1px solid rgba(107,87,214,.25)}
 .btn.soft:hover{border-color:var(--vi)}
@@ -62,7 +62,7 @@ nav a:hover{color:var(--vi)}
 .hero .sub{margin:24px 0 0;font-size:clamp(15px,1.6vw,17.5px);color:var(--sub);max-width:560px;line-height:1.7}
 .hero .sub b{color:var(--ink)}
 .cta{margin-top:30px;display:flex;gap:11px;align-items:center;flex-wrap:wrap}
-.btn.iri{background:linear-gradient(110deg,var(--teal),var(--vi) 55%,var(--mag));color:#fffdf7;box-shadow:0 8px 30px rgba(107,87,214,.3)}
+.btn.iri{background:linear-gradient(110deg,var(--teal),var(--vi) 55%,var(--mag));color:#fbfcff;box-shadow:0 8px 30px rgba(107,87,214,.3)}
 .btn.iri:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(107,87,214,.42)}
 .gpill{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-weight:600;font-size:13.5px;color:var(--ink);transition:.15s;box-shadow:0 1px 2px rgba(23,20,31,.04)}
 .gpill:hover{border-color:var(--vi);color:var(--vi)}
@@ -71,7 +71,7 @@ nav a:hover{color:var(--vi)}
 .micro a:hover{color:var(--vi)}
 
 /* live ledger card — the hero IS the product */
-.ledgercard{position:relative;background:rgba(255,253,247,.75);backdrop-filter:blur(14px);border:1px solid var(--line2);border-radius:20px;box-shadow:0 24px 70px rgba(23,20,31,.13);transform:rotate(1.6deg);overflow:hidden}
+.ledgercard{position:relative;background:rgba(251,252,255,.72);backdrop-filter:blur(14px);border:1px solid var(--line2);border-radius:20px;box-shadow:0 24px 70px rgba(23,20,31,.13);transform:rotate(1.6deg);overflow:hidden}
 @media(max-width:980px){.ledgercard{transform:none}}
 .ledgercard .lh{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
 .ledgercard .lt{font-family:'JetBrains Mono';font-size:10.5px;font-weight:700;letter-spacing:.2em;color:var(--vi)}
@@ -97,8 +97,8 @@ nav a:hover{color:var(--vi)}
 .classes{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:30px 0 10px}
 @media(max-width:860px){.classes{grid-template-columns:1fr}}
 .cl{border:1px solid var(--line);border-radius:18px;padding:34px 32px;position:relative;overflow:hidden}
-.cl.meme{background:linear-gradient(160deg,#fffdf7, #f4eefe)}
-.cl.rwa{background:linear-gradient(160deg,#fffdf7, #e9f6f0)}
+.cl.meme{background:linear-gradient(160deg,#fbfcff, #eae6fb)}
+.cl.rwa{background:linear-gradient(160deg,#fbfcff, #e9f6f0)}
 .cl .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .cl .tag{font-family:'JetBrains Mono';font-size:10.5px;font-weight:700;letter-spacing:.14em;padding:5px 13px;border-radius:999px}
 .cl.meme .tag{background:rgba(107,87,214,.12);color:var(--vi)}
