@@ -1,6 +1,6 @@
 # RAVEN — X (Twitter) Kit 🪶
 
-**Handle:** *(you have a name — drop it in)* · **Site:** ravenloans.xyz · **Ticker:** $RAVEN
+**Handle:** @RavenLoans (x.com/RavenLoans) · **Site:** ravenloans.xyz · **Ticker:** $RAVEN
 **Profile art:** `raven-pfp.png` (avatar) · `raven-banner.png` (header)
 
 ## Name & bio
