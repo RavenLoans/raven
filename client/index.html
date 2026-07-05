@@ -38,14 +38,28 @@ nav a:hover{color:var(--vi)}
 .btn.soft{background:var(--wash);color:var(--vi);border:1px solid rgba(107,87,214,.25)}
 .btn.soft:hover{border-color:var(--vi)}
 
-.hero{padding:74px 0 46px;text-align:center}
-.pill{display:inline-block;font-family:'JetBrains Mono';font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--warn);background:rgba(184,134,11,.08);border:1px solid rgba(184,134,11,.25);border-radius:999px;padding:7px 16px;margin-bottom:26px}
-.hero h1{font-family:'Fraunces';font-weight:750;font-size:clamp(42px,7vw,78px);line-height:1.03;letter-spacing:-.015em}
+.hero{position:relative;padding:88px 0 56px;text-align:left}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:7px 14px;margin-bottom:26px;box-shadow:0 1px 2px rgba(23,20,31,.05)}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 3px rgba(15,168,138,.18)}
+.hero h1{font-family:'Fraunces';font-weight:550;font-size:clamp(44px,8.5vw,118px);line-height:.94;letter-spacing:-.04em;max-width:1000px}
 .hero h1 em{font-style:italic;font-weight:550}
-.hero .sub{margin:22px auto 0;font-size:clamp(15px,2vw,18px);color:var(--sub);max-width:660px;line-height:1.65}
+.hero .sub{margin:26px 0 0;font-size:clamp(15px,2vw,19px);color:var(--sub);max-width:600px;line-height:1.65}
 .hero .sub b{color:var(--ink)}
-.cta{margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.live{margin-top:34px;display:flex;gap:28px;justify-content:center;flex-wrap:wrap;font-family:'JetBrains Mono';font-size:11.5px;letter-spacing:.1em;color:var(--mut);text-transform:uppercase}
+.cta{margin-top:34px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.gpill{display:inline-flex;align-items:center;gap:7px;padding:12px 22px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-weight:600;font-size:14px;color:var(--ink);transition:.15s;box-shadow:0 1px 2px rgba(23,20,31,.04)}
+.gpill:hover{border-color:var(--vi);color:var(--vi)}
+.micro{margin-top:16px;font-size:12px;color:var(--mut)}
+.micro a{text-decoration:underline;text-underline-offset:3px}
+.micro a:hover{color:var(--vi)}
+.stats4{margin-top:52px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden;max-width:860px;box-shadow:0 1px 3px rgba(23,20,31,.05)}
+@media(max-width:720px){.stats4{grid-template-columns:1fr 1fr}}
+.stats4 .s{background:var(--panel);padding:20px 14px;text-align:center}
+.stats4 .s b{font-family:'Fraunces';font-weight:550;font-size:clamp(22px,3vw,34px);letter-spacing:-.03em;display:block}
+.stats4 .s span{display:block;margin-top:5px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
+.heromark{position:absolute;right:8px;top:110px;pointer-events:none;opacity:.94;animation:hop 5s ease-in-out infinite}
+@media(max-width:1020px){.heromark{display:none}}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.live{margin-top:26px;display:flex;gap:28px;flex-wrap:wrap;font-family:'JetBrains Mono';font-size:11.5px;letter-spacing:.1em;color:var(--mut);text-transform:uppercase}
 .live b{color:var(--teal);font-size:15px}
 
 .classes{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:30px 0 10px}
@@ -132,14 +146,27 @@ footer .fm{font-family:'Fraunces';font-weight:750;font-size:16px;color:var(--ink
 
 <div class="wrap">
   <div class="hero">
-    <div class="pill">◆ two asset classes · paper protocol · real live prices ◆</div>
-    <h1>Borrow SOL.<br>Keep your bags <em class="irid">and</em> your stocks.</h1>
-    <p class="sub">Pledge what you already hold — memecoins at up to <b>30% LTV</b>, tokenized stocks at up to
-      <b>70% LTV with 30-day terms</b> — and take SOL without selling. Set take-profits and stops on collateral
-      <b>while it's locked</b>. Repay well, and the raven remembers: <b>your credit unlocks better terms.</b></p>
+    <div class="heromark">
+      <svg width="230" height="230" viewBox="0 0 32 32"><defs><linearGradient id="rgh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0fa88a"/><stop offset=".5" stop-color="#6b57d6"/><stop offset="1" stop-color="#b84fd6"/></linearGradient></defs><path d="M4 20 C7 8 20 4 29 7 L20 11 L28 13 L17 15 C14 22 9 25 3 27 C6 24 7 22 7.4 20.8 Z" fill="url(#rgh)"/><circle cx="20.6" cy="8.8" r="1.3" fill="#f7f4ec"/><circle cx="30" cy="6.2" r="1.8" fill="#6b57d6"/></svg>
+    </div>
+    <div class="pill"><span class="dot"></span>Solana lending protocol · paper mode · live prices</div>
+    <h1>Liquidity without<br><em>losing your bag.</em></h1>
+    <p class="sub">Borrow SOL against your memecoins, tokenized stocks, and RWAs — and set take-profits and
+      stops on that same collateral. Liquidity now, upside intact: manage it all from a dashboard
+      <b>in your browser, never a Telegram bot</b> — building on-chain credit with every repay.</p>
     <div class="cta">
-      <a class="btn main" href="/app">Try it against your real bag →</a>
-      <a class="btn soft" href="#borrow">How it works</a>
+      <a class="btn main" href="/app">Start borrowing →</a>
+      <a class="gpill" href="#earn">Earn yield</a>
+      <a class="gpill" href="#earn">🪶 Hold $RAVEN · earn 70%</a>
+      <a class="gpill" href="#credit">★ Build on-chain credit</a>
+      <a class="gpill" href="#borrow"><span id="tokCount">19</span> approved tokens</a>
+    </div>
+    <p class="micro">No wallet handy? <a href="/app">Watch any address →</a></p>
+    <div class="stats4">
+      <div class="s"><b>15s</b><span>keeper tick</span></div>
+      <div class="s"><b>1.5–5%</b><span>flat fee · no surprises</span></div>
+      <div class="s"><b id="tokCount2">19</b><span>tokens to borrow against</span></div>
+      <div class="s"><b>0</b><span>signatures ever asked</span></div>
     </div>
     <div class="live">
       <span><b id="lLoans">—</b> loans</span><span><b id="lSol">—</b> SOL borrowed</span>
@@ -285,6 +312,8 @@ fetch('/api/catalog').then(r=>r.json()).then(c=>{
   const chip=t=>`<span class="chip">${t.sym}</span>`;
   memeChips.innerHTML=c.catalog.filter(t=>t.cls==='meme'&&t.enabled).map(chip).join('');
   rwaChips.innerHTML=c.catalog.filter(t=>t.cls==='rwa'&&t.enabled).map(chip).join('');
+  const n=c.catalog.filter(t=>t.enabled).length;
+  tokCount.textContent=n; tokCount2.textContent=n;
 }).catch(()=>{});
 </script>
 </body>
