@@ -1,10 +1,10 @@
 # RAVEN — X (Twitter) Kit 🪶
 
-**Handle:** *(you have a name — drop it in)* · **Site:** ravenonsol.xyz *(placeholder)* · **Ticker:** $RAVEN
+**Handle:** *(you have a name — drop it in)* · **Site:** ravenloans.xyz · **Ticker:** $RAVEN
 **Profile art:** `raven-pfp.png` (avatar) · `raven-banner.png` (header)
 
 ## Name & bio
-**Display name:** `raven 🪶` · **Location:** `on-chain, Solana` · **Website:** ravenonsol.xyz
+**Display name:** `raven 🪶` · **Location:** `on-chain, Solana` · **Website:** ravenloans.xyz
 
 **Bio (≤160):**
 > Borrow SOL against your bag — memecoins & tokenized stocks — without letting go. TP/SL on locked collateral, credit that remembers. Web-first, never a Telegram bot. $RAVEN
@@ -17,7 +17,7 @@
 > Any bag that trades is a credit line. Borrow SOL against memecoins and tokenized stocks — without selling — and arm take-profits and stops on that collateral while it's pledged.
 >
 > Web-first. Never a Telegram bot.
-> ravenonsol.xyz
+> ravenloans.xyz
 
 **2/ (attach `raven-tiers.png`)**
 > Two asset classes, one click to borrow:
@@ -52,11 +52,11 @@
 **6/ (CTA)**
 > Borrow against your bag. Without letting go.
 >
-> 🪶 ravenonsol.xyz · $RAVEN
+> 🪶 ravenloans.xyz · $RAVEN
 > $RAVEN launches on pump.fun — CA armed on the site at launch.
 
 ## Standalones
-- **Docs flex:** "we wrote the whole machine down — architecture, the keeper math, credit, fees, the API. read it: ravenonsol.xyz/docs"
+- **Docs flex:** "we wrote the whole machine down — architecture, the keeper math, credit, fees, the API. read it: ravenloans.xyz/docs"
 - **Trust one-liner:** "connecting to raven asks for 0 signatures. it reads your address, nothing else. that's the entire security model — because there's nothing to sign."
 - **CA drop (at launch):** "CA: `<mint>` — live on the site. every borrow, repay, and liquidation is already a public receipt."
 

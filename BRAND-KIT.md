@@ -24,4 +24,4 @@
 
 **Voice:** confident, terse, doctrine over benefit. *"Any bag that trades is a credit line."* · *"Collateral that can still sell itself."* · *"The raven remembers."* Cool iridescence, never warm gold. The trust pitch is the product: web-first, no keys held, receipts for everything, and one word that says it all — **0 signatures ever asked.**
 
-**⚠️ Placeholders to swap before launch:** domain shown as `ravenonsol.xyz` and ticker `$RAVEN` throughout the assets — update the `.dom`/`$RAVEN` strings in `_studio/build.js` and re-render once the real domain + X handle are set.
+**Domain:** `ravenloans.xyz` (live) · **Ticker:** `$RAVEN`. Only the X handle is still open — no asset hardcodes it, so nothing needs re-rendering when it's set.

@@ -44,4 +44,4 @@
 - [ ] Server engine (catalog, prices, tiers, loans, keeper, credit, fees, receipts)
 - [ ] Client dashboard + landing
 - [ ] Studio brand kit, X kit, demo.mp4
-- [ ] Deploy (Railway) + domain (ravenonsol.xyz? user picks) + launch $RAVEN
+- [ ] Deploy (Railway) + domain (ravenloans.xyz? user picks) + launch $RAVEN

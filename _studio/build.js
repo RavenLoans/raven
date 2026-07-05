@@ -102,7 +102,7 @@ assets['raven-banner'] = page(3000, 1000, `
        <div class="name grad">raven</div>
        <div class="tag">Borrow SOL against memecoins &amp; tokenized stocks — <b>without letting go.</b></div>
        <div class="row">${chip('UP TO 70% LTV')}${chip('TP / SL ON COLLATERAL', 'var(--teal)')}${chip('NEVER A TELEGRAM BOT')}</div>
-       <div class="dom">ravenonsol.xyz · $RAVEN</div>
+       <div class="dom">ravenloans.xyz · $RAVEN</div>
      </div>
    </div>`);
 
@@ -121,7 +121,7 @@ assets['raven-keyart'] = page(2400, 1350, `
        <div class="name">Borrow against<br>your bag.<br><em class="grad">Without letting go.</em></div>
        <div class="sub">Any bag that trades is a credit line — memecoins to <b>30% LTV</b>, tokenized stocks to
          <b>70% over 30 days</b>. Arm stops on collateral <b>while it's pledged</b>, and build credit the ledger never forgets.</div>
-       <div class="dom">ravenonsol.xyz</div>
+       <div class="dom">ravenloans.xyz</div>
      </div>
    </div>`);
 
@@ -144,7 +144,7 @@ assets['raven-how'] = page(2400, 1350, `
        ${loopCard('03 · PROTECT', 'Arm TP/SL', 'A 15-second keeper watches your stops on the collateral <b style="color:var(--vi)">while it’s pledged.</b>')}
        ${loopCard('04 · REMEMBER', 'Build credit', 'Every clean repay lifts your score — <b style="color:var(--teal)">higher LTV, lower fees.</b>', true)}
      </div>
-     <div class="foot">connect · borrow · protect · repay — every action a public receipt · ravenonsol.xyz</div>
+     <div class="foot">connect · borrow · protect · repay — every action a public receipt · ravenloans.xyz</div>
    </div>`);
 
 // 5) TWO ASSET CLASSES / TIERS 2400×1350
@@ -177,7 +177,7 @@ assets['raven-tiers'] = page(2400, 1350, `
          <div class="cn">Stocks → SOL</div>
          <div class="tiers">${tierMini('Express', '50%', '7d · 3%', 'r')}${tierMini('Quick', '60%', '15d · 4%', 'r')}${tierMini('Standard', '70%', '30d · 5%', 'r')}</div></div>
      </div>
-     <div class="foot">AAPL · NVDA · TSLA · COIN · gold — the xStocks you already hold · ravenonsol.xyz</div>
+     <div class="foot">AAPL · NVDA · TSLA · COIN · gold — the xStocks you already hold · ravenloans.xyz</div>
    </div>`);
 
 // 6) CREDIT 2400×1350
@@ -199,7 +199,7 @@ assets['raven-credit'] = page(2400, 1350, `
        ${crCard('600 – 799', 'Fledged', '<b style="color:var(--teal)">+2% LTV</b> on every tier.')}
        ${crCard('800 – 1000', 'Unkindness', '<b style="color:var(--teal)">+4% LTV · −25bps</b> fee.', true)}
      </div>
-     <div class="foot">repay +40 · protected exit +20 · liquidation −250 — credit is earned by repaying, never bought · ravenonsol.xyz</div>
+     <div class="foot">repay +40 · protected exit +20 · liquidation −250 — credit is earned by repaying, never bought · ravenloans.xyz</div>
    </div>`);
 
 // 7) VS THE OTHER BIRD 2400×1350
@@ -227,7 +227,7 @@ assets['raven-vs'] = page(2400, 1350, `
        ${vrow('Keeper', 'Ticks every ~90 seconds', '<b>Every 15 seconds</b> — 6× faster to your stop')}
        ${vrow('Proof', 'Trust the bot', '<b>Read the ledger</b> — every action is a public receipt')}
      </table>
-     <div class="foot">we even accept their token as collateral. no hard feelings. 🪶 · ravenonsol.xyz</div>
+     <div class="foot">we even accept their token as collateral. no hard feelings. 🪶 · ravenloans.xyz</div>
    </div>`);
 
 for (const [name, html] of Object.entries(assets)) {
