@@ -3,151 +3,227 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RAVEN — app</title>
+<title>RAVEN — dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,550;9..144,650;9..144,750&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,550;0,9..144,650;1,9..144,550&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f7f4ec;--panel:#fffdf7;--panel2:#f0ece0;--ink:#17141f;--sub:#4e4963;--mut:#847e9a;--dim:#a8a3bc;
-  --teal:#0fa88a;--vi:#6b57d6;--mag:#b84fd6;--line:rgba(23,20,31,.12);--line2:rgba(23,20,31,.24);--warn:#b8860b;--bad:#c93b52}
+:root{--bg:#f7f4ec;--bg2:#efece2;--panel:#fffdf7;--panel2:#f4f0e5;--ink:#17141f;--sub:#4e4963;--mut:#847e9a;--dim:#a8a3bc;
+  --teal:#0fa88a;--vi:#6b57d6;--mag:#b84fd6;--line:rgba(23,20,31,.1);--line2:rgba(23,20,31,.2);--warn:#b8860b;--bad:#c93b52;
+  --wash:rgba(107,87,214,.08);--washt:rgba(15,168,138,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif}
-.sy{font-family:'Fraunces',serif}.mo{font-family:'JetBrains Mono',monospace}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:14px}
+.fr{font-family:'Fraunces',serif}.mo{font-family:'JetBrains Mono',monospace}
 a{color:inherit;text-decoration:none}
 .irid{background:linear-gradient(110deg,var(--teal),var(--vi) 55%,var(--mag));-webkit-background-clip:text;background-clip:text;color:transparent}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;background-image:
-  radial-gradient(2px 2px at 14% 20%,rgba(107,87,214,.16),transparent),
-  radial-gradient(2px 2px at 80% 14%,rgba(15,168,138,.14),transparent),
-  radial-gradient(2px 2px at 40% 70%,rgba(184,79,214,.12),transparent)}
-.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 18px}
-header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
-.mark{display:flex;align-items:center;gap:10px;font-family:'Fraunces';font-weight:800;font-size:18px}
-.strip{display:flex;gap:20px;font-family:'JetBrains Mono';font-size:11.5px;color:var(--mut);letter-spacing:.08em;flex-wrap:wrap}
-.strip b{color:var(--teal)}
-.paper{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.14em;color:var(--warn);border:1px solid rgba(255,195,92,.35);border-radius:999px;padding:4px 11px}
 
-.cols{display:grid;grid-template-columns:1fr 340px;gap:18px;padding:20px 0 60px}
-@media(max-width:960px){.cols{grid-template-columns:1fr}}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
-.pt{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.2em;color:var(--vi);text-transform:uppercase;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
-.pt .r{color:var(--mut);letter-spacing:.04em;text-transform:none}
+.shell{display:grid;grid-template-columns:225px 1fr;min-height:100vh}
+@media(max-width:900px){.shell{grid-template-columns:1fr}.side{display:none}}
+/* sidebar */
+.side{background:var(--bg2);border-right:1px solid var(--line);padding:20px 14px;position:sticky;top:0;height:100vh}
+.side .mark{display:flex;align-items:center;gap:9px;font-family:'Fraunces';font-weight:650;font-size:19px;padding:6px 12px;margin-bottom:22px}
+.snav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--sub);font-weight:500;margin-bottom:2px}
+.snav a:hover{background:rgba(23,20,31,.05);color:var(--ink)}
+.snav a.on{background:var(--wash);color:var(--vi);font-weight:600}
+.snav .ic{width:17px;text-align:center;opacity:.75}
+.slbl{font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.2em;color:var(--dim);margin:20px 12px 8px}
+/* topbar */
+.main{min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 26px;border-bottom:1px solid var(--line);background:rgba(247,244,236,.9);position:sticky;top:0;z-index:10;backdrop-filter:blur(8px)}
+.wpill{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut);background:var(--panel2);border-radius:999px;padding:7px 14px}
+.wpill .d{width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.wpill.live{color:var(--ink)} .wpill.live .d{background:var(--teal)}
+.tr{display:flex;gap:10px;align-items:center}
+.paper{font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.12em;color:var(--warn);border:1px solid rgba(184,134,11,.3);border-radius:999px;padding:5px 11px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:999px;font-weight:600;font-size:13px;cursor:pointer;border:none;transition:.15s}
+.btn.acc{background:linear-gradient(110deg,var(--teal),var(--vi) 60%,var(--mag));color:#fffdf7;box-shadow:0 4px 18px rgba(107,87,214,.25)}
+.btn.acc:hover{transform:translateY(-1px)}
+.btn.acc:disabled{opacity:.4;cursor:not-allowed}
+.btn.gh{background:var(--panel);border:1px solid var(--line2);color:var(--ink)}
+.btn.gh:hover{border-color:var(--vi);color:var(--vi)}
+.btn.warn{background:rgba(201,59,82,.08);border:1px solid rgba(201,59,82,.35);color:var(--bad)}
+.btn.sm{padding:8px 14px;font-size:12px}
 
-input,select{background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--ink);font-family:'JetBrains Mono';font-size:14px;padding:11px 13px;outline:none;width:100%}
+.content{padding:24px 26px 70px;display:grid;grid-template-columns:1fr 330px;gap:20px;max-width:1440px}
+@media(max-width:1150px){.content{grid-template-columns:1fr}}
+/* connect banner */
+.cbanner{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;background:linear-gradient(120deg,#fdf8ea,#f3ecfb);border:1px solid var(--line);border-radius:16px;padding:22px 26px}
+.cbanner h2{font-family:'Fraunces';font-weight:650;font-size:22px}
+.cbanner p{color:var(--sub);font-size:13.5px;margin-top:4px}
+.cbanner .r{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.cbanner input{background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:10px 16px;font-family:'JetBrains Mono';font-size:12px;width:300px;outline:none}
+.cbanner input:focus{border-color:var(--vi)}
+/* stat cards */
+.stats{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+@media(max-width:1150px){.stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+.sc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 1px 2px rgba(23,20,31,.04)}
+.sc .k{font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.18em;color:var(--mut);text-transform:uppercase}
+.sc .v{font-family:'Fraunces';font-weight:650;font-size:26px;letter-spacing:-.02em;margin-top:7px}
+.sc .s{font-size:11px;color:var(--mut);margin-top:3px}
+.sc.hl{background:linear-gradient(140deg,#fdf8ea,#f5eefc);border-color:rgba(107,87,214,.25)}
+/* panels + sections */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:0 1px 2px rgba(23,20,31,.04);margin-bottom:18px}
+h3.sec{font-family:'Fraunces';font-weight:650;font-size:20px;margin-bottom:14px;display:flex;align-items:center;gap:9px}
+h3.sec .cnt{font-family:'JetBrains Mono';font-size:10.5px;color:var(--mut);background:var(--panel2);border-radius:999px;padding:2px 9px}
+.empty{border:1.5px dashed var(--line2);border-radius:12px;padding:34px;text-align:center;color:var(--mut);font-size:13.5px}
+.empty a{color:var(--vi);text-decoration:underline;text-underline-offset:3px}
+input,select{background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--ink);font-family:'JetBrains Mono';font-size:13.5px;padding:11px 13px;outline:none;width:100%}
 input:focus,select:focus{border-color:var(--vi)}
-.btn{display:inline-block;padding:11px 20px;border-radius:8px;font-family:'Fraunces';font-weight:700;font-size:12.5px;letter-spacing:.06em;cursor:pointer;border:none;transition:.15s}
-.btn.main{background:linear-gradient(110deg,var(--teal),var(--vi) 60%,var(--mag));color:#0a0a12}
-.btn.main:hover{box-shadow:0 4px 26px rgba(139,123,255,.4)}
-.btn.main:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
-.btn.ghost{border:1px solid var(--line2);background:transparent;color:var(--sub)}
-.btn.ghost:hover{color:var(--ink)}
-.btn.warn{background:rgba(255,109,122,.14);border:1px solid rgba(255,109,122,.4);color:var(--bad)}
-
-.gate{max-width:560px;margin:70px auto;text-align:center}
-.gate h1{font-family:'Fraunces';font-weight:800;font-size:34px;margin-bottom:10px}
-.gate p{color:var(--sub);font-size:14.5px;margin-bottom:24px;line-height:1.6}
-.gate .row{display:flex;gap:10px}
-
-.vault .tok{display:grid;grid-template-columns:70px 1fr 1fr 1fr auto;gap:8px;align-items:center;padding:10px 6px;border-bottom:1px solid rgba(139,123,255,.08);font-size:13.5px}
-.vault .tok .s{font-family:'Fraunces';font-weight:700}
-.vault .tok .k{font-family:'JetBrains Mono';font-size:12.5px;color:var(--sub)}
-.vault .tok .k b{color:var(--ink)}
-
 .tiers3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
-.t3{border:1px solid var(--line);border-radius:10px;padding:13px;text-align:center;cursor:pointer;transition:.15s}
+.t3{border:1px solid var(--line);border-radius:12px;padding:13px;text-align:center;cursor:pointer;transition:.15s;background:var(--panel)}
 .t3:hover{border-color:var(--line2)}
-.t3.sel{border-color:var(--teal);background:rgba(77,227,192,.06)}
-.t3 .tn{font-family:'Fraunces';font-weight:700;font-size:14px}
-.t3 .tl{font-family:'JetBrains Mono';font-size:20px;font-weight:700;margin:4px 0}
-.t3 .td{font-size:11px;color:var(--mut)}
-.quote{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono';font-size:13px;line-height:2;color:var(--sub)}
+.t3.sel{border-color:var(--vi);background:var(--wash)}
+.t3 .tn{font-family:'Fraunces';font-weight:650;font-size:14px}
+.t3 .tl{font-family:'Fraunces';font-weight:650;font-size:22px;margin:3px 0}
+.t3 .td{font-size:10.5px;color:var(--mut)}
+.quote{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-family:'JetBrains Mono';font-size:12.5px;line-height:2;color:var(--sub)}
 .quote b{color:var(--ink)} .quote .hl{color:var(--teal)} .quote .lq{color:var(--warn)}
-
-.loan{border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px;background:var(--panel2)}
-.loan .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.loan .sym{font-family:'Fraunces';font-weight:700;font-size:16px}
-.loan .st{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.12em;padding:3px 10px;border-radius:999px}
-.st.open{color:var(--teal);border:1px solid rgba(77,227,192,.4)}
-.st.repaid,.st.sold{color:var(--vi);border:1px solid var(--line2)}
-.st.protected{color:var(--warn);border:1px solid rgba(255,195,92,.4)}
-.st.liquidated{color:var(--bad);border:1px solid rgba(255,109,122,.4)}
-.loan .rows{font-family:'JetBrains Mono';font-size:12.5px;color:var(--sub);line-height:1.9}
+.loan{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;background:var(--panel)}
+.loan .top2{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.loan .sym{font-family:'Fraunces';font-weight:650;font-size:17px}
+.loan .st{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.12em;padding:3px 10px;border-radius:999px}
+.st.open{color:var(--teal);border:1px solid rgba(15,168,138,.4);background:var(--washt)}
+.st.repaid,.st.sold{color:var(--vi);border:1px solid rgba(107,87,214,.35);background:var(--wash)}
+.st.protected{color:var(--warn);border:1px solid rgba(184,134,11,.35);background:rgba(184,134,11,.07)}
+.st.liquidated{color:var(--bad);border:1px solid rgba(201,59,82,.35);background:rgba(201,59,82,.06)}
+.loan .rows{font-family:'JetBrains Mono';font-size:12px;color:var(--sub);line-height:1.9}
 .loan .rows b{color:var(--ink)}
 .health{height:7px;border-radius:4px;background:rgba(23,20,31,.08);margin:10px 0;overflow:hidden}
 .health i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--bad),var(--warn) 45%,var(--teal) 75%)}
 .pr{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
-.pr input{width:110px;padding:8px 10px;font-size:12px}
-.pr .lbl{font-family:'JetBrains Mono';font-size:11px;color:var(--mut)}
-
-.credit{text-align:center}
-.credit .score{font-family:'JetBrains Mono';font-weight:700;font-size:46px}
-.credit .tiern{font-family:'Fraunces';font-weight:700;font-size:15px;margin:4px 0 10px}
-.credit .hist{font-family:'JetBrains Mono';font-size:11.5px;color:var(--mut);line-height:1.9}
-.tape{max-height:520px;overflow-y:auto}
-.rc{border-bottom:1px solid rgba(139,123,255,.08);padding:10px 2px;font-size:12px}
-.rc .a{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--vi)}
+.pr input{width:104px;padding:8px 10px;font-size:12px}
+.pr .lbl{font-family:'JetBrains Mono';font-size:10.5px;color:var(--mut)}
+.vt{width:100%;border-collapse:collapse;font-size:13px}
+.vt th{font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.16em;color:var(--mut);text-transform:uppercase;text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+.vt td{padding:11px 6px;border-bottom:1px solid rgba(23,20,31,.06)}
+.vt td.s{font-family:'Fraunces';font-weight:650;font-size:15px}
+.vt td.m{font-family:'JetBrains Mono';font-size:12.5px;color:var(--sub)}
+.vt .cls{font-family:'JetBrains Mono';font-size:9px;letter-spacing:.1em;padding:2px 8px;border-radius:999px;margin-left:7px;vertical-align:middle}
+.cls.meme{background:var(--wash);color:var(--vi)} .cls.rwa{background:var(--washt);color:var(--teal)}
+/* right column */
+.gauge{text-align:center}
+.gauge svg{width:210px;height:130px}
+.gauge .sc2{font-family:'Fraunces';font-weight:650;font-size:40px;margin-top:-64px}
+.gauge .tierc{display:inline-block;font-family:'JetBrains Mono';font-size:10px;letter-spacing:.16em;color:var(--vi);background:var(--wash);border-radius:999px;padding:4px 14px;margin-top:6px}
+.gauge p{font-size:12.5px;color:var(--mut);margin-top:12px;line-height:1.6}
+.hist{display:flex;justify-content:center;gap:16px;margin-top:12px;font-family:'JetBrains Mono';font-size:11px;color:var(--mut)}
+.holders .row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(23,20,31,.06);font-size:13px}
+.holders .row b{font-family:'JetBrains Mono'}
+.tape{max-height:430px;overflow-y:auto}
+.rc{border-bottom:1px solid rgba(23,20,31,.06);padding:10px 2px;font-size:12px}
+.rc .a{font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--vi)}
 .rc .a.liquidate{color:var(--bad)} .rc .a.auto_sell{color:var(--warn)} .rc .a.borrow{color:var(--teal)}
 .rc .s{color:var(--sub);line-height:1.5;margin-top:3px}
-#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:13px 22px;font-family:'JetBrains Mono';font-size:13px;transition:.25s;opacity:0;z-index:50}
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fffdf7;border-radius:12px;padding:13px 24px;font-family:'JetBrains Mono';font-size:12.5px;transition:.25s;opacity:0;z-index:60}
 #toast.show{transform:translateX(-50%);opacity:1}
-#toast.err{border-color:rgba(255,109,122,.5);color:var(--bad)}
+#toast.err{background:var(--bad)}
 .mut{color:var(--mut)} .small{font-size:12px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <a class="mark" href="/"><svg width="26" height="26" viewBox="0 0 32 32"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4de3c0"/><stop offset=".5" stop-color="#8b7bff"/><stop offset="1" stop-color="#e07bff"/></linearGradient></defs><path d="M4 20 C7 8 20 4 29 7 L20 11 L28 13 L17 15 C14 22 9 25 3 27 C6 24 7 22 7.4 20.8 Z" fill="url(#rg)"/><circle cx="20.6" cy="8.8" r="1.3" fill="#08080d"/></svg>RAVEN</a>
-    <div class="strip">
-      <span>SOL <b id="sSol">—</b></span><span>OPEN <b id="sOpen">—</b></span>
-      <span>BORROWED <b id="sBor">—</b></span><span>LP UTIL <b id="sUtil">—</b></span>
-      <span class="paper">PAPER · REAL PRICES</span>
+<div class="shell">
+  <aside class="side">
+    <a class="mark" href="/"><svg width="24" height="24" viewBox="0 0 32 32"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0fa88a"/><stop offset=".5" stop-color="#6b57d6"/><stop offset="1" stop-color="#b84fd6"/></linearGradient></defs><path d="M4 20 C7 8 20 4 29 7 L20 11 L28 13 L17 15 C14 22 9 25 3 27 C6 24 7 22 7.4 20.8 Z" fill="url(#rg)"/></svg>raven</a>
+    <div class="snav">
+      <a href="#overview" class="on"><span class="ic">▦</span>Overview</a>
+      <a href="#loans"><span class="ic">$</span>Loans</a>
+      <a href="#borrow"><span class="ic">→</span>Borrow</a>
+      <a href="#vault"><span class="ic">◈</span>Vault</a>
+      <a href="#creditCard"><span class="ic">★</span>Credit</a>
+      <a href="#ledger"><span class="ic">≡</span>Ledger</a>
     </div>
-  </header>
+    <div class="slbl">LINKS</div>
+    <div class="snav">
+      <a href="/#borrow"><span class="ic">◎</span>Tokens</a>
+      <a href="/#tiers"><span class="ic">%</span>Tiers</a>
+      <a href="/#why"><span class="ic">🪶</span>Why RAVEN</a>
+    </div>
+  </aside>
 
-  <div id="gate" class="gate">
-    <h1>Show the raven <span class="irid">your bag.</span></h1>
-    <p>Connect and RAVEN reads your real holdings, priced live. <b style="color:var(--ink)">No signatures, ever</b> — connecting only shares your address.
-    Empty wallets get a paper demo bag. Everything here is paper until the audit.</p>
-    <button class="btn main" id="gConnect" style="padding:15px 40px;font-size:15px">CONNECT WALLET</button>
-    <div style="margin-top:16px"><a href="#" id="gPasteLink" class="small" style="color:var(--mut);text-decoration:underline">or paste any address (watch mode)</a></div>
-    <div class="row" id="gPasteRow" style="display:none;margin-top:14px"><input id="gw" maxlength="44" placeholder="SOLANA WALLET ADDRESS"><button class="btn ghost" id="gGo">LOAD</button></div>
-  </div>
-
-  <div id="appCols" class="cols" style="display:none">
-    <div>
-      <div class="panel vault" style="margin-bottom:18px">
-        <div class="pt">YOUR VAULT <span class="r" id="vWho">—</span></div>
-        <div id="vRows"></div>
-        <div class="small mut" style="margin-top:10px">SOL balance (paper): <b class="mo" id="vSol" style="color:var(--teal)">0</b> · re-LOAD anytime to refresh your real bag</div>
+  <div class="main">
+    <div class="top">
+      <span class="wpill" id="wpill"><span class="d"></span><span id="wtext">No wallet connected</span></span>
+      <div class="tr">
+        <span class="paper">PAPER · REAL PRICES</span>
+        <button class="btn gh sm" id="btnWatch">Watch address</button>
+        <button class="btn acc" id="btnConnect">Connect Wallet</button>
       </div>
+    </div>
 
-      <div class="panel" style="margin-bottom:18px">
-        <div class="pt">BORROW</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px">
-          <select id="bTok"></select>
-          <input id="bAmt" type="number" min="0" placeholder="AMOUNT">
-          <button class="btn ghost" id="bMax">MAX</button>
+    <div class="content">
+      <div class="cbanner" id="cbanner">
+        <div>
+          <h2 class="fr">Connect your wallet to get started</h2>
+          <p>RAVEN reads your real balances and prices them live — <b>no signatures, ever</b>. Empty wallets get a paper demo bag.</p>
         </div>
-        <div class="tiers3" id="bTiers"></div>
-        <div class="quote" id="bQuote">pick a token, an amount, and a tier — the full quote (including your liquidation price) appears before you commit.</div>
-        <div style="margin-top:12px;text-align:right"><button class="btn main" id="bGo" disabled>BORROW</button></div>
+        <div class="r">
+          <button class="btn acc" id="bannerConnect">🟣 Phantom / Solflare</button>
+          <input id="gw" maxlength="44" placeholder="or paste any address — watch mode" style="display:none">
+          <button class="btn gh" id="gGo" style="display:none">Load</button>
+        </div>
       </div>
 
-      <div class="panel">
-        <div class="pt">POSITIONS <span class="r" id="pCount"></span></div>
-        <div id="pRows"><div class="small mut">no loans yet — the ledger awaits.</div></div>
+      <div class="stats" id="overview">
+        <div class="sc"><div class="k">SOL balance</div><div class="v" id="stSol">0.0000</div><div class="s">paper SOL</div></div>
+        <div class="sc"><div class="k">Holdings</div><div class="v" id="stHold">0</div><div class="s">catalog tokens</div></div>
+        <div class="sc"><div class="k">Eligible collateral</div><div class="v" id="stColl">$0</div><div class="s" id="stCollS">free to pledge</div></div>
+        <div class="sc"><div class="k">Active loans</div><div class="v" id="stLoans">0</div><div class="s" id="stLoansS">no active loans</div></div>
+        <div class="sc"><div class="k">Total owed</div><div class="v" id="stOwed">0.0000</div><div class="s">SOL debt</div></div>
+        <div class="sc hl"><div class="k">Credit score</div><div class="v irid" id="stCredit">—</div><div class="s" id="stCreditS">connect to begin</div></div>
       </div>
-    </div>
 
-    <div>
-      <div class="panel credit" style="margin-bottom:18px">
-        <div class="pt" style="justify-content:center">CREDIT — THE RAVEN REMEMBERS</div>
-        <div class="score irid" id="cScore">—</div>
-        <div class="tiern" id="cTier">—</div>
-        <div class="hist" id="cHist"></div>
+      <div class="colL">
+        <div class="panel" id="loans">
+          <h3 class="sec">Active Loans <span class="cnt" id="pCount">0</span></h3>
+          <div id="pRows"><div class="empty">No active loans — pledge a supported token to borrow SOL. <a href="#borrow">Start below ↓</a></div></div>
+        </div>
+
+        <div class="panel" id="borrow">
+          <h3 class="sec">Borrow</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px">
+            <select id="bTok"></select>
+            <input id="bAmt" type="number" min="0" placeholder="AMOUNT">
+            <button class="btn gh" id="bMax">MAX</button>
+          </div>
+          <div class="tiers3" id="bTiers"></div>
+          <div class="quote" id="bQuote">pick a token, an amount, and a tier — the full quote (including your liquidation price) appears before you commit.</div>
+          <div style="margin-top:12px;text-align:right"><button class="btn acc" id="bGo" disabled>Borrow →</button></div>
+        </div>
+
+        <div class="panel" id="vault">
+          <h3 class="sec">Eligible Collateral <span class="cnt" id="vCount">0</span></h3>
+          <table class="vt"><thead><tr><th>Token</th><th>Free</th><th>Locked</th><th>Price</th><th>Value free</th></tr></thead>
+          <tbody id="vRows"><tr><td colspan="5"><div class="empty" style="border:none">No tokens the catalog recognizes yet — connect or load a wallet.</div></td></tr></tbody></table>
+          <div class="small mut" style="margin-top:8px">re-connect anytime to refresh your real bag · demo bags are marked on the ledger</div>
+        </div>
+
+        <div class="panel">
+          <h3 class="sec">History</h3>
+          <div id="hRows"><div class="empty">Closed loans appear here — repaid, protected, sold, or liquidated.</div></div>
+        </div>
       </div>
-      <div class="panel">
-        <div class="pt">LEDGER — LIVE RECEIPTS</div>
-        <div class="tape" id="tape"></div>
+
+      <div class="colR">
+        <div class="panel gauge" id="creditCard">
+          <h3 class="sec" style="justify-content:center">Credit Score</h3>
+          <svg viewBox="0 0 210 130" id="gSvg"></svg>
+          <div class="sc2" id="cScore">—</div>
+          <div class="tierc" id="cTier">UNRANKED</div>
+          <p id="cNote">No score yet — take your first loan to start building credit. The raven remembers.</p>
+          <div class="hist" id="cHist"></div>
+        </div>
+        <div class="panel holders">
+          <h3 class="sec">$RAVEN Holders</h3>
+          <div class="row"><span>Holders' share of every fee</span><b class="irid">70%</b></div>
+          <div class="row"><span>Fees accrued (holders)</span><b id="hFees">—</b></div>
+          <div class="row"><span>LP pool share</span><b>20%</b></div>
+          <div class="row"><span>Your referral earnings</span><b id="hRef">—</b></div>
+          <p class="small mut" style="margin-top:10px">distributions activate at token launch — accrual is already live on the ledger.</p>
+        </div>
+        <div class="panel" id="ledger">
+          <h3 class="sec">Ledger — live</h3>
+          <div class="tape" id="tape"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -158,64 +234,100 @@ input:focus,select:focus{border-color:var(--vi)}
 'use strict';
 const $=s=>document.querySelector(s);
 const fmt=(x,d=4)=>x==null?'—':(+x).toLocaleString(undefined,{maximumFractionDigits:d});
-const px=p=>p==null?'—':'$'+(p<0.01?p.toExponential(3):p.toFixed(4));
-let CATALOG=[],ACC=null,TIER='standard',TIERS={},WALLET=localStorage.ravenWallet||'';
+const px=p=>p==null?'—':'$'+(p>=1?(+p).toLocaleString(undefined,{maximumFractionDigits:2}):Number((+p).toPrecision(3)).toString());
+let CATALOG=[],ACC=null,TIER='standard',TIERS={},WALLET=localStorage.ravenWallet||'',SOLUSD=0;
 let toastT;function toast(m,err){const t=$('#toast');t.textContent=m;t.className='show'+(err?' err':'');clearTimeout(toastT);toastT=setTimeout(()=>t.className='',3400)}
 async function api(p,body){const r=await fetch(p,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:{});const j=await r.json();if(!r.ok)throw new Error(j.error||'request failed');return j}
 
 async function boot(){
   const cfg=await api('/api/config');TIERS=cfg.tiers;
-  renderTierCards();
-  await refreshCatalog();await refreshStats();await refreshTape();
-  if(WALLET){$('#gw').value=WALLET;load()}
-  else if(localStorage.ravenConnected==='1')connectWallet(true);   // eager reconnect, no popup
+  await refreshCatalog();renderTierCards();await refreshTape();drawGauge(0);
+  if(WALLET)load(WALLET);
+  else if(localStorage.ravenConnected==='1')connectWallet(true);
   wsConnect();
-  setInterval(refreshCatalog,20000);setInterval(refreshStats,15000);setInterval(()=>{if(ACC)refreshAccount()},12000);
+  setInterval(refreshCatalog,20000);setInterval(()=>{if(WALLET)refreshAccount()},12000);
 }
-async function refreshCatalog(){const c=await api('/api/catalog');CATALOG=c.catalog;$('#sSol').textContent='$'+fmt(c.solUsd,2)}
-async function refreshStats(){const s=await api('/api/stats');$('#sOpen').textContent=s.loansOpen;$('#sBor').textContent=fmt(s.borrowedSol,2);$('#sUtil').textContent=(s.lp.utilization*100).toFixed(1)+'%'}
-async function refreshTape(){const r=await api('/api/receipts?n=30');$('#tape').innerHTML=r.receipts.map(rcHtml).join('')}
+async function refreshCatalog(){const c=await api('/api/catalog');CATALOG=c.catalog;SOLUSD=c.solUsd}
+async function refreshTape(){const r=await api('/api/receipts?n=25');$('#tape').innerHTML=r.receipts.map(rcHtml).join('')}
 const rcHtml=rc=>`<div class="rc"><span class="a ${rc.action}">${rc.action.replace('_',' ')}</span><div class="s">${esc(rc.summary||'')}</div></div>`;
 const esc=s=>String(s).replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
 
-async function load(){
-  const w=$('#gw').value.trim();
+function walletProvider(){return (window.phantom&&window.phantom.solana)||window.solana||window.solflare||null}
+async function connectWallet(eager){
+  const prov=walletProvider();
+  if(!prov){if(!eager){toast('no wallet extension — use watch mode',1);showWatch()}return}
+  try{
+    const r=await prov.connect(eager?{onlyIfTrusted:true}:undefined);
+    const pk=((r&&r.publicKey)||prov.publicKey).toString();
+    localStorage.ravenConnected='1';
+    load(pk);
+  }catch(e){if(!eager)toast('connect cancelled',1)}
+}
+function showWatch(){$('#gw').style.display='';$('#gGo').style.display='';$('#gw').focus()}
+async function load(w){
+  w=(w||$('#gw').value).trim();
   if(!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(w))return toast('that is not a solana address',1);
-  $('#gGo').textContent='READING…';
   try{
     const ref=new URLSearchParams(location.search).get('ref');
     const r=await api('/api/register',{wallet:w,ref});
     WALLET=w;localStorage.ravenWallet=w;ACC=r.account;
-    $('#gate').style.display='none';$('#appCols').style.display='';
+    $('#cbanner').style.display='none';
+    $('#wpill').classList.add('live');$('#wtext').textContent=w.slice(0,4)+'…'+w.slice(-4);
+    $('#btnConnect').textContent='Refresh bag';
     render();toast('the raven has read your bag');
   }catch(e){toast(e.message,1)}
-  $('#gGo').textContent='LOAD';
 }
 async function refreshAccount(){try{const r=await api('/api/account?wallet='+WALLET);if(r.account){ACC=r.account;render()}}catch(e){}}
 
+function drawGauge(score){
+  const s=Math.max(0,Math.min(1000,score)),f=s/1000;
+  const cx=105,cy=118,R=88;
+  const a=Math.PI*(1-f);
+  const pt=(ang,r)=>[cx+r*Math.cos(ang),cy-r*Math.sin(ang)];
+  const [x1,y1]=pt(Math.PI,R),[x2,y2]=pt(a,R);
+  const big=f>0.5?1:0;
+  $('#gSvg').innerHTML=`
+    <path d="M ${x1} ${y1} A ${R} ${R} 0 0 1 ${pt(0,R)[0]} ${pt(0,R)[1]}" fill="none" stroke="rgba(23,20,31,.08)" stroke-width="13" stroke-linecap="round"/>
+    ${f>0.005?`<path d="M ${x1} ${y1} A ${R} ${R} 0 ${big} 1 ${x2} ${y2}" fill="none" stroke="url(#gg)" stroke-width="13" stroke-linecap="round"/>`:''}
+    <defs><linearGradient id="gg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#0fa88a"/><stop offset=".55" stop-color="#6b57d6"/><stop offset="1" stop-color="#b84fd6"/></linearGradient></defs>`;
+}
+
 function render(){
   if(!ACC)return;
-  $('#vWho').textContent=WALLET.slice(0,4)+'…'+WALLET.slice(-4)+(ACC.vault&&Object.keys(ACC.vault).length&&ACC.loans?'':'');
-  $('#vSol').textContent=fmt(ACC.sol,4);
-  // vault
-  const rows=Object.entries(ACC.vault).map(([sym,v])=>`
-    <div class="tok"><span class="s">${sym}</span>
-      <span class="k">free <b>${fmt(v.free)}</b></span>
-      <span class="k">locked <b>${fmt(v.locked)}</b></span>
-      <span class="k">${px(v.priceUsd)}</span>
-      <span class="k">≈ <b>$${fmt(v.free*v.priceUsd,0)}</b> free</span></div>`).join('');
-  $('#vRows').innerHTML=rows||'<div class="small mut">nothing the catalog recognizes — demo bag incoming on next LOAD.</div>';
+  // stat cards
+  $('#stSol').textContent=fmt(ACC.sol,4);
+  const vaultEntries=Object.entries(ACC.vault);
+  $('#stHold').textContent=vaultEntries.length;
+  let collUsd=0;for(const[,v]of vaultEntries)if(v.priceUsd)collUsd+=v.free*v.priceUsd;
+  $('#stColl').textContent='$'+fmt(collUsd,0);
+  const open=ACC.loans.filter(l=>l.status==='open');
+  $('#stLoans').textContent=open.length;$('#stLoansS').textContent=open.length?'keeper watching':'no active loans';
+  const owed=open.reduce((s,l)=>s+l.debt,0);
+  $('#stOwed').textContent=fmt(owed,4);
+  $('#stCredit').textContent=ACC.credit;$('#stCreditS').textContent=ACC.creditTier;
+  // gauge
+  drawGauge(ACC.credit);$('#cScore').textContent=ACC.credit;$('#cTier').textContent=ACC.creditTier.toUpperCase();
+  $('#cNote').textContent=ACC.credit>=800?'The flock’s elite: +4% LTV and −25bps on every tier.':ACC.credit>=600?'Fledged: +2% LTV on every tier. Keep repaying.':'Repay clean to climb — every repay +40, liquidation −250.';
+  $('#cHist').innerHTML=`<span>repaid ${ACC.history.repaid}</span><span>protected ${ACC.history.protected}</span><span>liquidated ${ACC.history.liquidated}</span>`;
+  $('#hRef').textContent=fmt(ACC.refEarned,4)+' SOL';
+  // vault table
+  $('#vCount').textContent=vaultEntries.length;
+  $('#vRows').innerHTML=vaultEntries.map(([sym,v])=>{
+    const c=CATALOG.find(x=>x.sym===sym)||{};
+    return `<tr><td class="s">${sym}<span class="cls ${c.cls||'meme'}">${(c.cls||'meme').toUpperCase()}</span></td>
+      <td class="m">${fmt(v.free)}</td><td class="m">${fmt(v.locked)}</td><td class="m">${px(v.priceUsd)}</td>
+      <td class="m"><b>$${fmt(v.free*v.priceUsd,0)}</b></td></tr>`;
+  }).join('')||'<tr><td colspan="5"><div class="empty" style="border:none">nothing recognized yet.</div></td></tr>';
   // borrow select
-  const opts=Object.entries(ACC.vault).filter(([,v])=>v.free>0&&v.priceUsd>0)
+  const opts=vaultEntries.filter(([,v])=>v.free>0&&v.priceUsd>0)
     .map(([sym,v])=>{const c=CATALOG.find(x=>x.sym===sym);return `<option value="${c?c.mint:''}">${sym} — ${fmt(v.free)} free</option>`}).join('');
-  const prev=$('#bTok').value;$('#bTok').innerHTML=opts;if(prev)$('#bTok').value=prev;
-  // credit
-  $('#cScore').textContent=ACC.credit;$('#cTier').textContent=ACC.creditTier;
-  $('#cHist').innerHTML=`repaid ${ACC.history.repaid} · protected ${ACC.history.protected} · liquidated ${ACC.history.liquidated}<br>referral earned ${fmt(ACC.refEarned,4)} SOL`;
-  // positions
-  const open=ACC.loans.filter(l=>l.status==='open'),closed=ACC.loans.filter(l=>l.status!=='open').slice(0,6);
-  $('#pCount').textContent=open.length+' open';
-  $('#pRows').innerHTML=(open.map(loanHtml).join('')+(closed.length?`<div class="pt" style="margin-top:16px">RECENT HISTORY</div>`+closed.map(loanHtml).join(''):''))||'<div class="small mut">no loans yet — the ledger awaits.</div>';
+  const prev=$('#bTok').value;$('#bTok').innerHTML=opts;if(prev&&[...$('#bTok').options].some(o=>o.value===prev))$('#bTok').value=prev;
+  renderTierCards();
+  // loans
+  $('#pCount').textContent=open.length;
+  $('#pRows').innerHTML=open.map(loanHtml).join('')||'<div class="empty">No active loans — pledge a supported token to borrow SOL. <a href="#borrow">Start below ↓</a></div>';
+  const closed=ACC.loans.filter(l=>l.status!=='open').slice(0,6);
+  $('#hRows').innerHTML=closed.map(loanHtml).join('')||'<div class="empty">Closed loans appear here.</div>';
   quote();
 }
 function loanHtml(l){
@@ -223,18 +335,18 @@ function loanHtml(l){
   const due=openL?Math.max(0,l.dueAt-Date.now()):0;
   const dueTxt=openL?(due>86400000?Math.floor(due/86400000)+'d '+Math.floor(due%86400000/3600000)+'h':Math.floor(due/3600000)+'h '+Math.floor(due%3600000/60000)+'m'):'';
   return `<div class="loan">
-    <div class="top"><span class="sym">${l.sym} <span class="mo small mut">× ${fmt(l.amount)}</span></span><span class="st ${l.status}">${l.status.toUpperCase()}</span></div>
+    <div class="top2"><span class="sym">${l.sym} <span class="mo small mut">× ${fmt(l.amount)}</span></span><span class="st ${l.status}">${l.status.toUpperCase()}</span></div>
     ${openL?`<div class="health"><i style="width:${Math.min(100,Math.max(3,(l.healthPct-100)/1.5+50))}%"></i></div>`:''}
     <div class="rows">
       debt <b>${l.debt} SOL</b> · now ${px(l.priceUsd)} · liq <b style="color:var(--warn)">${px(l.liqPriceUsd)}</b>${openL?` · health <b>${l.healthPct==null?'—':l.healthPct+'%'}</b> · due <b>${dueTxt}</b>`:''}
-      ${l.tp||l.sl?`<br>protect: tp ${l.tp?px(l.tp):'—'} · sl ${l.sl?px(l.sl):'—'}`:''}
+      ${l.tp||l.sl?`<br>auto-protect: tp ${l.tp?px(l.tp):'—'} · sl ${l.sl?px(l.sl):'—'}`:''}
     </div>
     ${openL?`<div class="pr">
       <span class="lbl">TP $</span><input type="number" id="tp_${l.id}" value="${l.tp||''}" placeholder="—">
       <span class="lbl">SL $</span><input type="number" id="sl_${l.id}" value="${l.sl||''}" placeholder="—">
-      <button class="btn ghost" onclick="protect('${l.id}')">ARM</button>
-      <button class="btn main" onclick="repay('${l.id}')">REPAY ${l.debt}</button>
-      <button class="btn warn" onclick="closeSell('${l.id}')">CLOSE VIA SELL</button>
+      <button class="btn gh sm" onclick="protect('${l.id}')">Arm</button>
+      <button class="btn acc sm" onclick="repay('${l.id}')">Repay ${l.debt}</button>
+      <button class="btn warn sm" onclick="closeSell('${l.id}')">Close via sell</button>
     </div>`:''}
   </div>`;
 }
@@ -263,20 +375,10 @@ window.protect=async id=>{try{await api('/api/protect',{wallet:WALLET,loan:id,tp
 window.repay=async id=>{try{await api('/api/repay',{wallet:WALLET,loan:id});toast('repaid — the raven remembers the good ones');refreshAccount()}catch(e){toast(e.message,1)}};
 window.closeSell=async id=>{try{await api('/api/close',{wallet:WALLET,loan:id});toast('closed via sell — surplus returned');refreshAccount()}catch(e){toast(e.message,1)}};
 
-function walletProvider(){return (window.phantom&&window.phantom.solana)||window.solana||window.solflare||null}
-async function connectWallet(eager){
-  const prov=walletProvider();
-  if(!prov){if(!eager){toast('no wallet extension found — use watch mode below',1);$('#gPasteRow').style.display='flex'}return}
-  try{
-    const r=await prov.connect(eager?{onlyIfTrusted:true}:undefined);
-    const pk=((r&&r.publicKey)||prov.publicKey).toString();
-    $('#gw').value=pk;localStorage.ravenConnected='1';
-    await load();
-  }catch(e){if(!eager)toast('connect cancelled',1)}
-}
-$('#gConnect').onclick=()=>connectWallet(false);
-$('#gPasteLink').onclick=e=>{e.preventDefault();$('#gPasteRow').style.display='flex';$('#gw').focus()};
-$('#gGo').onclick=load;$('#gw').addEventListener('keydown',e=>{if(e.key==='Enter')load()});
+$('#btnConnect').onclick=()=>connectWallet(false);
+$('#bannerConnect').onclick=()=>connectWallet(false);
+$('#btnWatch').onclick=()=>{$('#cbanner').style.display='';showWatch()};
+$('#gGo').onclick=()=>load();$('#gw').addEventListener('keydown',e=>{if(e.key==='Enter')load()});
 $('#bAmt').addEventListener('input',quoteSoon);$('#bTok').addEventListener('change',()=>{renderTierCards();quote()});
 $('#bMax').onclick=()=>{const c=CATALOG.find(x=>x.mint===$('#bTok').value);if(!c||!ACC)return;const v=ACC.vault[c.sym];if(v){$('#bAmt').value=v.free;quote()}};
 $('#bGo').onclick=async()=>{
@@ -285,6 +387,13 @@ $('#bGo').onclick=async()=>{
     ACC=r.account;toast('borrowed '+r.loan.principal+' SOL — liq at '+px(r.loan.liqPriceUsd));$('#bAmt').value='';render();
   }catch(e){toast(e.message,1)}
 };
+// stats fetch for global fee card
+async function refreshGlobal(){try{const s=await api('/api/stats');$('#hFees').textContent=fmt(s.fees.holders,4)+' SOL'}catch(e){}}
+refreshGlobal();setInterval(refreshGlobal,20000);
+// sidebar active state
+document.querySelectorAll('.snav a[href^="#"]').forEach(a=>a.addEventListener('click',()=>{
+  document.querySelectorAll('.snav a').forEach(x=>x.classList.remove('on'));a.classList.add('on');
+}));
 function wsConnect(){
   const ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host);
   ws.onmessage=e=>{const m=JSON.parse(e.data);
