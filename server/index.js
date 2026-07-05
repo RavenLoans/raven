@@ -20,10 +20,15 @@ const PRICE_URL = 'https://lite-api.jup.ag/price/v3?ids=';
 const SOL_MINT = 'So11111111111111111111111111111111111111112';
 
 // ---------- protocol parameters (published, deterministic) ----------
+// memecoins: volatile → lower LTV, short terms. RWAs (tokenized stocks/ETFs/metals):
+// meaningfully lower volatility → up to 70% LTV and 30-day terms.
 const TIERS = {
-  express:  { label: 'Express',  ltv: 0.30, days: 2, feeBps: 300, liqBuffer: 1.10 },
-  quick:    { label: 'Quick',    ltv: 0.25, days: 3, feeBps: 200, liqBuffer: 1.15 },
-  standard: { label: 'Standard', ltv: 0.20, days: 7, feeBps: 150, liqBuffer: 1.15 },
+  express:      { label: 'Express',      cls: 'meme', ltv: 0.30, days: 2,  feeBps: 300, liqBuffer: 1.10 },
+  quick:        { label: 'Quick',        cls: 'meme', ltv: 0.25, days: 3,  feeBps: 200, liqBuffer: 1.15 },
+  standard:     { label: 'Standard',     cls: 'meme', ltv: 0.20, days: 7,  feeBps: 150, liqBuffer: 1.15 },
+  rwa_express:  { label: 'RWA Express',  cls: 'rwa',  ltv: 0.50, days: 7,  feeBps: 300, liqBuffer: 1.08 },
+  rwa_quick:    { label: 'RWA Quick',    cls: 'rwa',  ltv: 0.60, days: 15, feeBps: 400, liqBuffer: 1.10 },
+  rwa_standard: { label: 'RWA Standard', cls: 'rwa',  ltv: 0.70, days: 30, feeBps: 500, liqBuffer: 1.12 },
 };
 const FEE_SPLIT = { holders: 0.70, lp: 0.20, referral: 0.05, protocol: 0.05 };
 const KEEPER_MS = 15000, PRICE_MS = 18000;
@@ -36,15 +41,27 @@ const LP_POOL_START = 10000;            // paper LP pool (SOL)
 
 // collateral catalog — validated against live prices at boot; anything unpriced is disabled
 const CATALOG = [
-  { sym: 'BONK',    mint: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263' },
-  { sym: 'WIF',     mint: 'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm' },
-  { sym: 'JUP',     mint: 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' },
-  { sym: 'POPCAT',  mint: '7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr' },
-  { sym: 'PENGU',   mint: '2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv' },
-  { sym: 'TRUMP',   mint: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN' },
-  { sym: 'PUMP',    mint: 'pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn' },
-  { sym: 'MAGPIE',  mint: '9UuLsJ3jf8ViBNeRcwXD53re5G3ypgfKK3s2EiMMpump' },  // yes, really
-  { sym: 'ATLAS',   mint: '5juLvibGs9qpEsb9E8EYdDTRWyptY1dKZa7odgbUpump' },
+  // memecoins & majors
+  { sym: 'BONK',    cls: 'meme', mint: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263' },
+  { sym: 'WIF',     cls: 'meme', mint: 'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm' },
+  { sym: 'JUP',     cls: 'meme', mint: 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' },
+  { sym: 'POPCAT',  cls: 'meme', mint: '7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr' },
+  { sym: 'PENGU',   cls: 'meme', mint: '2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv' },
+  { sym: 'TRUMP',   cls: 'meme', mint: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN' },
+  { sym: 'PUMP',    cls: 'meme', mint: 'pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn' },
+  { sym: 'MAGPIE',  cls: 'meme', mint: '9UuLsJ3jf8ViBNeRcwXD53re5G3ypgfKK3s2EiMMpump' },  // yes, really
+  { sym: 'ATLAS',   cls: 'meme', mint: '5juLvibGs9qpEsb9E8EYdDTRWyptY1dKZa7odgbUpump' },
+  // tokenized stocks / ETFs / metals (Backed xStocks)
+  { sym: 'AAPLx',   cls: 'rwa',  mint: 'XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp' },
+  { sym: 'NVDAx',   cls: 'rwa',  mint: 'Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh' },
+  { sym: 'TSLAx',   cls: 'rwa',  mint: 'XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB' },
+  { sym: 'COINx',   cls: 'rwa',  mint: 'Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu' },
+  { sym: 'MSTRx',   cls: 'rwa',  mint: 'XsP7xzNPvEHS1m6qfanPUGjNmdnmsLKEoNAnHjdxxyZ' },
+  { sym: 'METAx',   cls: 'rwa',  mint: 'Xsa62P5mvPszXL1krVUnU5ar38bBSVcWAB6fmPCo5Zu' },
+  { sym: 'GOOGLx',  cls: 'rwa',  mint: 'XsCPL9dNWBMvFtTmwcCA5v3xWPSMEBCszbQdiLLq6aN' },
+  { sym: 'SPYx',    cls: 'rwa',  mint: 'XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W' },
+  { sym: 'GLDx',    cls: 'rwa',  mint: 'Xsv9hRk1z5ystj9MhnA7Lq4vjSsLwzL2nxrwmwtD3re' },
+  { sym: 'HOODx',   cls: 'rwa',  mint: 'XsvNBAYkrDRNhA7wPHQfX3ZUXZyZLdnCQDfHZ56bzpg' },
 ];
 
 const r2 = (x) => Math.round(x * 100) / 100;
@@ -96,7 +113,7 @@ async function pollPrices() {
 }
 function pubPrices() { const o = {}; for (const c of CATALOG) if (PRICES[c.mint]) o[c.sym] = PRICES[c.mint]; return o; }
 function catalogPub() {
-  return CATALOG.map((c) => ({ sym: c.sym, mint: c.mint, price: PRICES[c.mint] || null, enabled: !!PRICES[c.mint] }));
+  return CATALOG.map((c) => ({ sym: c.sym, cls: c.cls, mint: c.mint, price: PRICES[c.mint] || null, enabled: !!PRICES[c.mint] }));
 }
 
 // ---------- real wallet balance read (the "your actual bag" feature) ----------
@@ -144,7 +161,11 @@ async function register(wallet, ref) {
       const c = CATALOG.find((x) => x.sym === sym);
       if (c && PRICES[c.mint] > 0) a.vault[c.mint] = r4(100 / PRICES[c.mint]);
     }
-    receipt('demo_bag', { wallet: short(wallet), summary: `${short(wallet)} arrived with an empty nest — granted a paper demo bag (~$400 + 0.05 sol) to fly with. real bags read automatically.` });
+    for (const sym of ['TSLAx', 'SPYx']) {   // a taste of the RWA side too
+      const c = CATALOG.find((x) => x.sym === sym);
+      if (c && PRICES[c.mint] > 0) a.vault[c.mint] = r4(150 / PRICES[c.mint]);
+    }
+    receipt('demo_bag', { wallet: short(wallet), summary: `${short(wallet)} arrived with an empty nest — granted a paper demo bag (~$700 across memes + tokenized stocks, plus 0.05 sol). real bags read automatically.` });
   }
   dirty();
   return a;
@@ -159,7 +180,8 @@ const short = (w) => (w || '').slice(0, 4) + '…' + (w || '').slice(-4);
 // ---------- quoting + loans ----------
 function quote(mint, amount, tierKey, credit) {
   const t = TIERS[tierKey]; const p = PRICES[mint];
-  if (!t || !(p > 0) || !(SOLP > 0) || !(amount > 0)) return null;
+  const cat = CATALOG.find((x) => x.mint === mint);
+  if (!t || !cat || t.cls !== cat.cls || !(p > 0) || !(SOLP > 0) || !(amount > 0)) return null;
   const ct = creditTier(credit ?? CREDIT.start);
   const ltv = t.ltv + ct.ltvBonus;
   const feeBps = Math.max(50, t.feeBps - ct.feeBpsOff);

@@ -3,197 +3,288 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RAVEN — borrow against your bag. the raven remembers.</title>
-<meta name="description" content="Web-first lending on Solana: borrow SOL against memecoins and majors, set take-profits and stops on locked collateral, build credit with every repay. Your keys never live in a Telegram bot.">
-<meta property="og:title" content="RAVEN — borrow against your bag">
-<meta property="og:description" content="Collateral that can still sell itself — with a credit score that remembers. Web-first, transparent, receipts for everything.">
+<title>RAVEN — borrow SOL against memecoins & tokenized stocks. The raven remembers.</title>
+<meta name="description" content="Web-first lending on Solana: borrow SOL against memecoins (up to 30% LTV) and tokenized stocks (up to 70% LTV, 30-day terms). In-loan take-profits & stops, on-chain credit memory, receipts for everything.">
+<meta property="og:title" content="RAVEN — borrow SOL. keep your bags and your stocks.">
+<meta property="og:description" content="Two asset classes, one click to borrow. TP/SL on locked collateral, credit that remembers, and your keys never live in a Telegram bot.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,650;0,9..144,750;1,9..144,550&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#08080d;--panel:rgba(18,17,26,.78);--ink:#efeef5;--sub:#b8b4c8;--mut:#7d7890;--dim:#4c4860;
-  --teal:#4de3c0;--vi:#8b7bff;--mag:#e07bff;--line:rgba(139,123,255,.2);--line2:rgba(139,123,255,.42);--good:#4de3c0;--warn:#ffc35c;--bad:#ff6d7a}
+:root{--bg:#f7f4ec;--panel:#fffdf7;--panel2:#f2eee2;--ink:#17141f;--sub:#4e4963;--mut:#847e9a;--line:rgba(23,20,31,.12);--line2:rgba(23,20,31,.2);
+  --vi:#6b57d6;--vi2:#8b7bff;--teal:#0fa88a;--mag:#b84fd6;--warn:#b8860b;--bad:#c93b52;
+  --wash:rgba(107,87,214,.07);--wash2:rgba(15,168,138,.07)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;overflow-x:hidden}
-.sy{font-family:'Syne',sans-serif}.mo{font-family:'JetBrains Mono',monospace}
+.fr{font-family:'Fraunces',serif}.mo{font-family:'JetBrains Mono',monospace}
 a{color:inherit;text-decoration:none}
-.irid{background:linear-gradient(110deg,var(--teal) 8%,var(--vi) 52%,var(--mag) 94%);-webkit-background-clip:text;background-clip:text;color:transparent}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:
-  radial-gradient(50% 38% at 82% -4%,rgba(139,123,255,.13),transparent 60%),
-  radial-gradient(44% 36% at 8% 12%,rgba(77,227,192,.07),transparent 60%),
-  radial-gradient(60% 48% at 50% 112%,rgba(224,123,255,.07),transparent 64%)}
-.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 22px}
+.irid{background:linear-gradient(110deg,var(--teal) 5%,var(--vi) 50%,var(--mag) 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;background-image:
+  radial-gradient(2px 2px at 12% 22%,rgba(107,87,214,.18),transparent),
+  radial-gradient(2px 2px at 78% 12%,rgba(15,168,138,.16),transparent),
+  radial-gradient(2px 2px at 34% 68%,rgba(184,79,214,.13),transparent),
+  radial-gradient(2px 2px at 88% 56%,rgba(107,87,214,.15),transparent),
+  radial-gradient(2px 2px at 52% 34%,rgba(23,20,31,.1),transparent)}
+.wrap{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:0 22px}
 
-header{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
-.mark{display:flex;align-items:center;gap:11px}
-.mark .name{font-family:'Syne';font-weight:800;font-size:21px;letter-spacing:.06em}
-nav{display:flex;gap:22px;align-items:center;font-size:13.5px;color:var(--mut);letter-spacing:.06em}
-nav a:hover{color:var(--ink)}
-.btn{display:inline-block;padding:13px 30px;border-radius:8px;font-family:'Syne';font-weight:700;font-size:14px;letter-spacing:.08em;transition:.2s;cursor:pointer;border:none}
-.btn.main{background:linear-gradient(110deg,var(--teal),var(--vi) 60%,var(--mag));color:#0a0a12}
-.btn.main:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(139,123,255,.4)}
-.btn.ghost{border:1px solid var(--line2);color:var(--sub);background:transparent}
-.btn.ghost:hover{color:var(--ink);border-color:var(--vi)}
+header{position:sticky;top:0;z-index:20;background:rgba(247,244,236,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hin{display:flex;justify-content:space-between;align-items:center;padding:14px 0}
+.mark{display:flex;align-items:center;gap:10px;font-family:'Fraunces';font-weight:750;font-size:21px;letter-spacing:.01em}
+nav{display:flex;gap:20px;align-items:center;font-size:13.5px;font-weight:500;color:var(--sub)}
+nav a:hover{color:var(--vi)}
+.btn{display:inline-block;padding:12px 26px;border-radius:999px;font-weight:700;font-size:13.5px;letter-spacing:.02em;transition:.18s;cursor:pointer;border:none}
+.btn.main{background:var(--ink);color:#fffdf7}
+.btn.main:hover{background:var(--vi);transform:translateY(-1px)}
+.btn.soft{background:var(--wash);color:var(--vi);border:1px solid rgba(107,87,214,.25)}
+.btn.soft:hover{border-color:var(--vi)}
 
-.hero{padding:84px 0 60px;text-align:center}
-.paper{display:inline-flex;align-items:center;gap:9px;font-family:'JetBrains Mono';font-size:11.5px;letter-spacing:.18em;color:var(--warn);border:1px solid rgba(255,195,92,.35);border-radius:999px;padding:7px 16px;text-transform:uppercase;margin-bottom:28px}
-.hero h1{font-family:'Syne';font-weight:800;font-size:clamp(40px,7vw,72px);line-height:1.04;letter-spacing:-.01em}
-.hero .tag{margin-top:18px;font-size:clamp(15px,2vw,19px);color:var(--sub);max-width:640px;margin-left:auto;margin-right:auto;line-height:1.6}
-.hero .tag b{color:var(--ink)}
-.cta{margin-top:34px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.live{margin-top:36px;display:flex;gap:30px;justify-content:center;flex-wrap:wrap;font-family:'JetBrains Mono';font-size:12px;letter-spacing:.12em;color:var(--mut);text-transform:uppercase}
+.hero{padding:74px 0 46px;text-align:center}
+.pill{display:inline-block;font-family:'JetBrains Mono';font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--warn);background:rgba(184,134,11,.08);border:1px solid rgba(184,134,11,.25);border-radius:999px;padding:7px 16px;margin-bottom:26px}
+.hero h1{font-family:'Fraunces';font-weight:750;font-size:clamp(42px,7vw,78px);line-height:1.03;letter-spacing:-.015em}
+.hero h1 em{font-style:italic;font-weight:550}
+.hero .sub{margin:22px auto 0;font-size:clamp(15px,2vw,18px);color:var(--sub);max-width:660px;line-height:1.65}
+.hero .sub b{color:var(--ink)}
+.cta{margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.live{margin-top:34px;display:flex;gap:28px;justify-content:center;flex-wrap:wrap;font-family:'JetBrains Mono';font-size:11.5px;letter-spacing:.1em;color:var(--mut);text-transform:uppercase}
 .live b{color:var(--teal);font-size:15px}
 
-.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:13px 0;overflow:hidden;white-space:nowrap}
-.ticker .in{display:inline-block;animation:tick 40s linear infinite;font-family:'JetBrains Mono';font-size:13px;color:var(--sub)}
-.ticker .in b{color:var(--teal)} .ticker .in i{font-style:normal;color:var(--dim);margin:0 16px}
-@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.classes{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:30px 0 10px}
+@media(max-width:860px){.classes{grid-template-columns:1fr}}
+.cl{border:1px solid var(--line);border-radius:18px;padding:34px 32px;position:relative;overflow:hidden}
+.cl.meme{background:linear-gradient(160deg,#fffdf7, #f4eefe)}
+.cl.rwa{background:linear-gradient(160deg,#fffdf7, #e9f6f0)}
+.cl .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.cl .tag{font-family:'JetBrains Mono';font-size:10.5px;font-weight:700;letter-spacing:.14em;padding:5px 13px;border-radius:999px}
+.cl.meme .tag{background:rgba(107,87,214,.12);color:var(--vi)}
+.cl.rwa .tag{background:rgba(15,168,138,.12);color:var(--teal)}
+.cl .ltvtag{font-family:'JetBrains Mono';font-size:12px;color:var(--mut)} .cl .ltvtag b{color:var(--ink)}
+.cl h2{font-family:'Fraunces';font-weight:750;font-size:clamp(30px,4vw,44px);line-height:1.05}
+.cl p{margin-top:12px;font-size:15px;color:var(--sub);line-height:1.6}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.chip{font-family:'JetBrains Mono';font-size:12px;font-weight:700;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px}
+.trio{display:flex;gap:10px;margin-top:20px}
+.trio .t{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.trio .t b{font-family:'Fraunces';font-size:21px;display:block}
+.trio .t span{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.1em;color:var(--mut);text-transform:uppercase}
 
-section{padding:76px 0}
-section h2{font-family:'Syne';font-weight:800;font-size:34px;text-align:center}
-section .sh{font-size:14px;color:var(--mut);text-align:center;margin-top:8px;margin-bottom:44px;letter-spacing:.06em}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px;backdrop-filter:blur(8px)}
-.card .n{font-family:'JetBrains Mono';font-size:11px;color:var(--vi);letter-spacing:.22em;margin-bottom:12px}
-.card h3{font-family:'Syne';font-size:18px;margin-bottom:10px}
-.card p{font-size:14.5px;color:var(--sub);line-height:1.6}
-.card p b{color:var(--teal)}
+section{padding:66px 0}
+.eyebrow{font-family:'JetBrains Mono';font-size:11.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--vi)}
+section h2.big{font-family:'Fraunces';font-weight:750;font-size:clamp(28px,4.4vw,44px);margin-top:10px;letter-spacing:-.01em}
+section .lead{margin-top:12px;font-size:15.5px;color:var(--sub);max-width:560px;line-height:1.65}
+.sechead{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:34px;border-bottom:1px solid var(--line);padding-bottom:26px}
 
-.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;max-width:900px;margin:0 auto}
-.tier{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:30px;text-align:center;position:relative}
-.tier.hot{border-color:var(--line2);box-shadow:0 0 44px rgba(139,123,255,.12)}
-.tier .tn{font-family:'Syne';font-weight:700;font-size:22px}
-.tier .ltv{font-family:'JetBrains Mono';font-weight:700;font-size:44px;margin:14px 0 2px}
-.tier .ltv small{font-size:16px;color:var(--mut)}
-.tier ul{list-style:none;margin-top:16px;font-size:14px;color:var(--sub);line-height:2}
-.tier .badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(110deg,var(--teal),var(--vi));color:#0a0a12;font-family:'JetBrains Mono';font-size:10px;font-weight:700;letter-spacing:.14em;padding:4px 12px;border-radius:999px}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+.tier{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(23,20,31,.04)}
+.tier .bar{height:6px;background:linear-gradient(90deg,var(--teal),var(--vi),var(--mag))}
+.tier .in{padding:24px 26px}
+.tier .lbls{display:flex;justify-content:space-between;margin-bottom:12px}
+.tier .lb{font-family:'JetBrains Mono';font-size:10px;font-weight:700;letter-spacing:.13em;padding:4px 11px;border-radius:999px;background:var(--wash);color:var(--vi)}
+.tier .lb.r{background:var(--panel2);color:var(--mut)}
+.tier h3{font-family:'Fraunces';font-weight:750;font-size:26px}
+.tier .de{font-size:13.5px;color:var(--sub);line-height:1.55;margin:8px 0 16px;min-height:42px}
+.nums{display:flex;gap:0;border-top:1px solid var(--line);padding-top:16px}
+.nums .n{flex:1;border-right:1px solid var(--line);padding-right:12px;margin-right:12px}
+.nums .n:last-child{border:none;margin:0;padding:0}
+.nums b{font-family:'Fraunces';font-weight:750;font-size:26px;display:block}
+.nums span{font-size:11px;color:var(--mut)}
+.meter{margin-top:16px}
+.meter .ml{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut);margin-bottom:5px}
+.meter .tr{height:8px;border-radius:5px;background:var(--panel2);overflow:hidden}
+.meter .fl{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--vi),var(--mag))}
+.tier .go{display:block;padding:14px 26px;border-top:1px solid var(--line);font-weight:700;font-size:13.5px;color:var(--vi)}
+.tier .go:hover{background:var(--wash)}
 
-.vs{max-width:860px;margin:0 auto}
+.credit3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.cr{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center}
+.cr .rng{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;color:var(--mut)}
+.cr h3{font-family:'Fraunces';font-weight:750;font-size:26px;margin:8px 0}
+.cr p{font-size:13.5px;color:var(--sub);line-height:1.7}
+.cr p b{color:var(--teal)}
+.moves{text-align:center;margin-top:22px;font-family:'JetBrains Mono';font-size:12px;color:var(--mut)}
+
+.earn{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.er{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;text-align:center}
+.er b{font-family:'Fraunces';font-weight:750;font-size:38px;display:block}
+.er .to{font-size:14px;font-weight:600;margin-top:4px}
+.er p{font-size:12.5px;color:var(--mut);margin-top:8px;line-height:1.5}
+
+.vs{max-width:880px;margin:0 auto}
 .vs .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-.vs .cell{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 22px;font-size:14.5px;line-height:1.55;color:var(--sub)}
-.vs .cell.them{border-color:rgba(255,109,122,.25)} .vs .cell.them b{color:var(--bad)}
-.vs .cell.us{border-color:rgba(77,227,192,.3)} .vs .cell.us b{color:var(--teal)}
+@media(max-width:720px){.vs .row{grid-template-columns:1fr}}
+.vs .cell{border-radius:12px;padding:18px 22px;font-size:14px;line-height:1.6;color:var(--sub);border:1px solid var(--line);background:var(--panel)}
+.vs .cell.them b{color:var(--bad)} .vs .cell.us{background:var(--wash2);border-color:rgba(15,168,138,.3)} .vs .cell.us b{color:var(--teal)}
 
-.credit{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.cr{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px 30px;text-align:center;min-width:220px}
-.cr .rng{font-family:'JetBrains Mono';font-size:12px;color:var(--mut);letter-spacing:.14em}
-.cr .nm{font-family:'Syne';font-weight:700;font-size:22px;margin:8px 0}
-.cr .pk{font-size:13.5px;color:var(--sub);line-height:1.7}
-.cr .pk b{color:var(--teal)}
-
-footer{border-top:1px solid var(--line);padding:44px 0 60px;text-align:center;font-size:12.5px;color:var(--dim);line-height:1.8}
-footer .fm{font-family:'Syne';font-weight:800;letter-spacing:.1em;color:var(--mut);margin-bottom:10px}
+footer{border-top:1px solid var(--line);padding:44px 0 60px;text-align:center;font-size:12.5px;color:var(--mut);line-height:1.8}
+footer .fm{font-family:'Fraunces';font-weight:750;font-size:16px;color:var(--ink);margin-bottom:10px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <a class="mark" href="/">
-      <svg width="30" height="30" viewBox="0 0 32 32"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4de3c0"/><stop offset=".5" stop-color="#8b7bff"/><stop offset="1" stop-color="#e07bff"/></linearGradient></defs><path d="M4 20 C7 8 20 4 29 7 L20 11 L28 13 L17 15 C14 22 9 25 3 27 C6 24 7 22 7.4 20.8 Z" fill="url(#rg)"/><circle cx="20.6" cy="8.8" r="1.3" fill="#08080d"/></svg>
-      <span class="name">RAVEN</span>
-    </a>
-    <nav>
-      <a href="#how">How it works</a><a href="#tiers">Tiers</a><a href="#credit">Credit</a><a href="#vs">Why RAVEN</a>
-      <a class="btn main" style="padding:10px 22px;font-size:12px" href="/app">OPEN APP</a>
-    </nav>
-  </header>
+<header><div class="wrap hin">
+  <a class="mark" href="/">
+    <svg width="28" height="28" viewBox="0 0 32 32"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0fa88a"/><stop offset=".5" stop-color="#6b57d6"/><stop offset="1" stop-color="#b84fd6"/></linearGradient></defs><path d="M4 20 C7 8 20 4 29 7 L20 11 L28 13 L17 15 C14 22 9 25 3 27 C6 24 7 22 7.4 20.8 Z" fill="url(#rg)"/><circle cx="20.6" cy="8.8" r="1.3" fill="#f7f4ec"/></svg>
+    raven
+  </a>
+  <nav>
+    <a href="#borrow">Borrow</a><a href="#tiers">Memecoins</a><a href="#rwa">Stocks · RWA</a><a href="#credit">Credit</a><a href="#earn">Earn</a><a href="#why">Why RAVEN</a>
+    <a class="btn main" href="/app">Open app</a>
+  </nav>
+</div></header>
 
+<div class="wrap">
   <div class="hero">
-    <div class="paper">◆ paper protocol · real prices · custody after audit ◆</div>
-    <h1>Borrow against your bag.<br><span class="irid">The raven remembers.</span></h1>
-    <p class="tag">Web-first lending on Solana: pledge memecoins and majors, take SOL, and set
-      <b>take-profits and stops on collateral while it's locked</b>. Repay well and your on-chain credit
-      unlocks better terms. Every action is a public receipt — and <b>your keys never live in a Telegram bot.</b></p>
+    <div class="pill">◆ two asset classes · paper protocol · real live prices ◆</div>
+    <h1>Borrow SOL.<br>Keep your bags <em class="irid">and</em> your stocks.</h1>
+    <p class="sub">Pledge what you already hold — memecoins at up to <b>30% LTV</b>, tokenized stocks at up to
+      <b>70% LTV with 30-day terms</b> — and take SOL without selling. Set take-profits and stops on collateral
+      <b>while it's locked</b>. Repay well, and the raven remembers: <b>your credit unlocks better terms.</b></p>
     <div class="cta">
-      <a class="btn main" href="/app">TRY IT AGAINST YOUR REAL BAG</a>
-      <a class="btn ghost" href="#how">HOW IT WORKS</a>
+      <a class="btn main" href="/app">Try it against your real bag →</a>
+      <a class="btn soft" href="#borrow">How it works</a>
     </div>
     <div class="live">
-      <span><b id="lLoans">—</b> loans opened</span>
-      <span><b id="lSol">—</b> SOL borrowed</span>
-      <span><b id="lAcc">—</b> ravens</span>
-      <span><b id="lFees">—</b> SOL fees split</span>
+      <span><b id="lLoans">—</b> loans</span><span><b id="lSol">—</b> SOL borrowed</span>
+      <span><b id="lAcc">—</b> ravens</span><span><b id="lFees">—</b> SOL fees split</span>
     </div>
   </div>
-</div>
 
-<div class="ticker"><div class="in" id="tick">loading the murder…</div></div>
+  <div class="classes" id="borrow">
+    <div class="cl meme">
+      <div class="top"><span class="tag">CRYPTO-NATIVE LENDING</span><span class="ltvtag">up to <b>30% LTV</b></span></div>
+      <h2>Memecoins</h2>
+      <p>Borrow SOL against your bags — without selling. Live prices, instant paper SOL, a published liquidation price before you commit, and a keeper watching every 15 seconds.</p>
+      <div class="chips" id="memeChips"></div>
+      <div class="trio">
+        <div class="t"><b>30%</b><span>max LTV</span></div>
+        <div class="t"><b>7d</b><span>longest term</span></div>
+        <div class="t"><b>1.5–3%</b><span>fee range</span></div>
+      </div>
+    </div>
+    <div class="cl rwa">
+      <div class="top"><span class="tag" style="background:rgba(15,168,138,.12);color:var(--teal)">REAL-WORLD ASSETS · LIVE</span><span class="ltvtag">up to <b>70% LTV</b></span></div>
+      <h2>Tokenized stocks</h2>
+      <p>Borrow SOL against AAPL, NVDA, TSLA, COIN, MSTR, SPY, gold and more — the xStocks you already hold. Lower volatility earns you more capital, for longer.</p>
+      <div class="chips" id="rwaChips"></div>
+      <div class="trio">
+        <div class="t"><b>70%</b><span>max LTV</span></div>
+        <div class="t"><b>30d</b><span>longest term</span></div>
+        <div class="t"><b>3–5%</b><span>fee range</span></div>
+      </div>
+    </div>
+  </div>
 
-<div class="wrap">
-  <section id="how">
-    <h2>Collateral that can still <span class="irid">sell itself.</span></h2>
-    <div class="sh">the loop, in four moves</div>
-    <div class="grid">
-      <div class="card"><div class="n">01 · PLEDGE</div><h3>Connect your wallet</h3><p>RAVEN reads your <b>real on-chain bag</b> and prices it live — <b>no signatures, ever</b>. No wallet handy? Paste any address in watch mode; empty bags get a paper demo bag.</p></div>
-      <div class="card"><div class="n">02 · BORROW</div><h3>Take SOL at your tier</h3><p>Express, Quick, or Standard. Your liquidation price is computed and <b>shown before you commit</b> — no surprises, ever.</p></div>
-      <div class="card"><div class="n">03 · PROTECT</div><h3>Arm TP / SL in-loan</h3><p>Your collateral keeps working while pledged: set a take-profit or stop and the keeper — <b>watching every 15 seconds</b> — sells, clears the debt, returns the surplus.</p></div>
-      <div class="card"><div class="n">04 · REMEMBER</div><h3>Build credit</h3><p>Every clean repay raises your score. Score unlocks <b>higher LTV and lower fees</b> — deterministic, published, on the ledger.</p></div>
+  <section id="tiers">
+    <div class="sechead">
+      <div><div class="eyebrow">Memecoin loans</div>
+      <h2 class="big">Three tiers. Two-to-seven days. 30% max LTV.</h2>
+      <p class="lead">Volatility caps LTV — shorter terms keep you safe. Your exact liquidation price is quoted before you borrow, every time.</p></div>
+      <a class="btn main" href="/app">Start now →</a>
+    </div>
+    <div class="tiers">
+      <div class="tier"><div class="bar"></div><div class="in">
+        <div class="lbls"><span class="lb">MEMECOIN</span><span class="lb r">MOST SOL</span></div>
+        <h3>Express</h3><div class="de">Maximum borrowing power for short-term plays where you need the most capital.</div>
+        <div class="nums"><div class="n"><b>30%</b><span>LTV</span></div><div class="n"><b>2</b><span>days</span></div><div class="n"><b>3%</b><span>fee</span></div></div>
+        <div class="meter"><div class="ml"><span>Borrowed</span><span>Collateral buffer</span></div><div class="tr"><div class="fl" style="width:30%"></div></div></div>
+      </div><a class="go" href="/app">Start borrowing at this tier →</a></div>
+      <div class="tier"><div class="bar"></div><div class="in">
+        <div class="lbls"><span class="lb">MEMECOIN</span><span class="lb r">POPULAR</span></div>
+        <h3>Quick</h3><div class="de">The balanced option — more time to repay with a comfortable loan-to-value ratio.</div>
+        <div class="nums"><div class="n"><b>25%</b><span>LTV</span></div><div class="n"><b>3</b><span>days</span></div><div class="n"><b>2%</b><span>fee</span></div></div>
+        <div class="meter"><div class="ml"><span>Borrowed</span><span>Collateral buffer</span></div><div class="tr"><div class="fl" style="width:25%"></div></div></div>
+      </div><a class="go" href="/app">Start borrowing at this tier →</a></div>
+      <div class="tier"><div class="bar"></div><div class="in">
+        <div class="lbls"><span class="lb">MEMECOIN</span><span class="lb r">SAFEST</span></div>
+        <h3>Standard</h3><div class="de">Lowest LTV means the most room before liquidation — and a full week to repay.</div>
+        <div class="nums"><div class="n"><b>20%</b><span>LTV</span></div><div class="n"><b>7</b><span>days</span></div><div class="n"><b>1.5%</b><span>fee</span></div></div>
+        <div class="meter"><div class="ml"><span>Borrowed</span><span>Collateral buffer</span></div><div class="tr"><div class="fl" style="width:20%"></div></div></div>
+      </div><a class="go" href="/app">Start borrowing at this tier →</a></div>
     </div>
   </section>
 
-  <section id="tiers">
-    <h2>Three tiers. <span class="irid">Zero ambiguity.</span></h2>
-    <div class="sh">same tier mechanics the market already knows — executed transparently</div>
+  <section id="rwa">
+    <div class="sechead">
+      <div><div class="eyebrow" style="color:var(--teal)">Tokenized stocks · ETFs · metals</div>
+      <h2 class="big">Up to 70% LTV. 30-day terms. Stocks you already hold.</h2>
+      <p class="lead">Real-world assets carry meaningfully lower volatility, so RAVEN lends more against them — and for longer.</p></div>
+      <a class="btn main" href="/app">Start now →</a>
+    </div>
     <div class="tiers">
-      <div class="tier hot"><div class="badge">MOST SOL OUT</div><div class="tn">Express</div><div class="ltv">30<small>% LTV</small></div><ul><li>2-day term</li><li>3.00% fee</li><li>tightest liq buffer</li></ul></div>
-      <div class="tier"><div class="tn">Quick</div><div class="ltv">25<small>% LTV</small></div><ul><li>3-day term</li><li>2.00% fee</li><li>standard buffer</li></ul></div>
-      <div class="tier"><div class="tn">Standard</div><div class="ltv">20<small>% LTV</small></div><ul><li>7-day term</li><li>1.50% fee</li><li>safest terms</li></ul></div>
+      <div class="tier"><div class="bar" style="background:linear-gradient(90deg,var(--teal),var(--vi))"></div><div class="in">
+        <div class="lbls"><span class="lb" style="background:var(--wash2);color:var(--teal)">STOCK · ETF · METAL</span><span class="lb r">QUICK WEEK</span></div>
+        <h3>RWA Express</h3><div class="de">7-day loan at 50% LTV — capital fast, repaid within the week.</div>
+        <div class="nums"><div class="n"><b>50%</b><span>LTV</span></div><div class="n"><b>7</b><span>days</span></div><div class="n"><b>3%</b><span>fee</span></div></div>
+        <div class="meter"><div class="ml"><span>Borrowed</span><span>Collateral buffer</span></div><div class="tr"><div class="fl" style="width:50%;background:linear-gradient(90deg,var(--teal),var(--vi))"></div></div></div>
+      </div><a class="go" href="/app">Start borrowing at this tier →</a></div>
+      <div class="tier"><div class="bar" style="background:linear-gradient(90deg,var(--teal),var(--vi))"></div><div class="in">
+        <div class="lbls"><span class="lb" style="background:var(--wash2);color:var(--teal)">STOCK · ETF · METAL</span><span class="lb r">BALANCED</span></div>
+        <h3>RWA Quick</h3><div class="de">15-day loan at 60% LTV — the sweet spot: more cash, more time.</div>
+        <div class="nums"><div class="n"><b>60%</b><span>LTV</span></div><div class="n"><b>15</b><span>days</span></div><div class="n"><b>4%</b><span>fee</span></div></div>
+        <div class="meter"><div class="ml"><span>Borrowed</span><span>Collateral buffer</span></div><div class="tr"><div class="fl" style="width:60%;background:linear-gradient(90deg,var(--teal),var(--vi))"></div></div></div>
+      </div><a class="go" href="/app">Start borrowing at this tier →</a></div>
+      <div class="tier"><div class="bar" style="background:linear-gradient(90deg,var(--teal),var(--vi))"></div><div class="in">
+        <div class="lbls"><span class="lb" style="background:var(--wash2);color:var(--teal)">STOCK · ETF · METAL</span><span class="lb r">MOST SOL</span></div>
+        <h3>RWA Standard</h3><div class="de">30-day loan at 70% LTV — our highest. Maximum capital, a full month to repay.</div>
+        <div class="nums"><div class="n"><b>70%</b><span>LTV</span></div><div class="n"><b>30</b><span>days</span></div><div class="n"><b>5%</b><span>fee</span></div></div>
+        <div class="meter"><div class="ml"><span>Borrowed</span><span>Collateral buffer</span></div><div class="tr"><div class="fl" style="width:70%;background:linear-gradient(90deg,var(--teal),var(--vi))"></div></div></div>
+      </div><a class="go" href="/app">Start borrowing at this tier →</a></div>
     </div>
   </section>
 
   <section id="credit">
-    <h2>The raven <span class="irid">remembers.</span></h2>
-    <div class="sh">credit is memory — and memory pays</div>
-    <div class="credit">
-      <div class="cr"><div class="rng">0 – 599</div><div class="nm">Hatchling</div><div class="pk">base terms<br>everyone starts at 300</div></div>
-      <div class="cr"><div class="rng">600 – 799</div><div class="nm">Fledged</div><div class="pk"><b>+2% LTV</b> on every tier<br>earned by repaying</div></div>
-      <div class="cr"><div class="rng">800 – 1000</div><div class="nm">Unkindness</div><div class="pk"><b>+4% LTV · −25bps fee</b><br>the flock's elite</div></div>
+    <div class="sechead"><div><div class="eyebrow">On-chain memory</div>
+      <h2 class="big">The raven <em class="fr irid" style="font-style:italic">remembers.</em></h2>
+      <p class="lead">Credit is memory — and memory pays. Every clean repay raises your score; every score tier unlocks better terms. Deterministic, published, visible on your dashboard.</p></div></div>
+    <div class="credit3">
+      <div class="cr"><div class="rng">0 – 599</div><h3>Hatchling</h3><p>Base terms on every tier.<br>Everyone starts at 300.</p></div>
+      <div class="cr"><div class="rng">600 – 799</div><h3>Fledged</h3><p><b>+2% LTV</b> on every tier —<br>earned by repaying, not by holding.</p></div>
+      <div class="cr"><div class="rng">800 – 1000</div><h3>Unkindness</h3><p><b>+4% LTV · −25bps fee</b><br>A group of ravens. The flock's elite.</p></div>
     </div>
-    <p style="text-align:center;margin-top:26px;font-size:13.5px;color:var(--mut)">repay +40 · protected exit +20 · liquidation −250 · all movements published in the receipts</p>
+    <div class="moves">repay +40 · protected exit +20 · liquidation −250 — every movement is a public receipt</div>
   </section>
 
-  <section id="vs">
-    <h2>Why not the <span class="irid">other bird?</span></h2>
-    <div class="sh">same mechanics — different spine</div>
+  <section id="earn">
+    <div class="sechead"><div><div class="eyebrow">Every loan pays</div>
+      <h2 class="big">Fees feed the flock.</h2>
+      <p class="lead">Every loan fee splits four ways, on the ledger, visible to anyone.</p></div></div>
+    <div class="earn">
+      <div class="er"><b class="irid">70%</b><div class="to">$RAVEN holders</div><p>The lion's share of every fee accrues to holders, pro-rata. No staking, no claiming ritual.</p></div>
+      <div class="er"><b style="color:var(--vi)">20%</b><div class="to">LP pool</div><p>The SOL that funds every loan earns its keep.</p></div>
+      <div class="er"><b style="color:var(--mag)">5%</b><div class="to">Referrals</div><p>Share your link — every loan your referrals take pays you, for life.</p></div>
+      <div class="er"><b style="color:var(--mut)">5%</b><div class="to">Protocol</div><p>Keeps the lights on and the keeper watching.</p></div>
+    </div>
+  </section>
+
+  <section id="why">
+    <div class="sechead"><div><div class="eyebrow">The other bird</div>
+      <h2 class="big">Same mechanics. Different spine.</h2></div></div>
     <div class="vs">
-      <div class="row"><div class="cell them"><b>Them:</b> custodial by design — "your wallet IS the bot wallet," keys live inside a Telegram bot.</div>
-      <div class="cell us"><b>RAVEN:</b> paper custody until audited — real prices, real bags read, zero keys held. Custody ships when it's safe, not when it's convenient.</div></div>
-      <div class="row"><div class="cell them"><b>Them:</b> Telegram-first — the product lives in a chat window.</div>
-      <div class="cell us"><b>RAVEN:</b> web-first — full dashboard, positions, credit, and a live receipt tape in your browser.</div></div>
+      <div class="row"><div class="cell them"><b>Them:</b> custodial by design — "your wallet IS the bot wallet." Your keys live inside a Telegram bot.</div>
+      <div class="cell us"><b>RAVEN:</b> paper custody until audited. Real prices, real bags read, zero keys held — connect never asks for a signature.</div></div>
+      <div class="row"><div class="cell them"><b>Them:</b> the product lives in a chat window.</div>
+      <div class="cell us"><b>RAVEN:</b> web-first — dashboard, positions, credit, and a live receipt tape in the open.</div></div>
       <div class="row"><div class="cell them"><b>Them:</b> liquidation keeper ticks every ~90 seconds.</div>
-      <div class="cell us"><b>RAVEN:</b> keeper ticks every <b>15 seconds</b> — six times faster to your stop.</div></div>
+      <div class="cell us"><b>RAVEN:</b> every <b>15 seconds</b> — six times faster to your stop.</div></div>
       <div class="row"><div class="cell them"><b>Them:</b> trust the bot.</div>
       <div class="cell us"><b>RAVEN:</b> read the ledger — every borrow, auto-sell, liquidation, and fee split is a public receipt.</div></div>
     </div>
-    <p style="text-align:center;margin-top:24px;font-family:'JetBrains Mono';font-size:12.5px;color:var(--dim)">we even accept their token as collateral. no hard feelings. 🪶</p>
-  </section>
-
-  <section style="text-align:center">
-    <h2>Fees feed the <span class="irid">flock.</span></h2>
-    <div class="sh">every loan fee splits, on the ledger</div>
-    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-family:'JetBrains Mono';font-size:14px">
-      <span class="card" style="padding:16px 24px"><b style="color:var(--teal)">70%</b> · $RAVEN holders</span>
-      <span class="card" style="padding:16px 24px"><b style="color:var(--vi)">20%</b> · LP pool</span>
-      <span class="card" style="padding:16px 24px"><b style="color:var(--mag)">5%</b> · referrals</span>
-      <span class="card" style="padding:16px 24px"><b style="color:var(--mut)">5%</b> · protocol</span>
-    </div>
-    <div class="cta" style="margin-top:40px"><a class="btn main" href="/app">ENTER THE UNKINDNESS</a></div>
+    <p style="text-align:center;margin-top:24px;font-family:'JetBrains Mono';font-size:12.5px;color:var(--mut)">we even accept their token as collateral. no hard feelings. 🪶</p>
   </section>
 </div>
 
 <footer><div class="wrap">
-  <div class="fm">RAVEN 🪶</div>
+  <div class="fm">raven 🪶</div>
   RAVEN is a paper protocol: prices and wallet reads are real; balances and custody are simulated until the on-chain program is audited.<br>
-  $RAVEN is a memecoin with no promise of value, yield, or profit. Never risk what you can't lose. The raven remembers — so does the chain.
+  $RAVEN is a memecoin with no promise of value, yield, or profit. Tokenized stocks are Backed xStocks priced via Jupiter. Never risk what you can't lose.
 </div></footer>
 
 <script>
 fetch('/api/stats').then(r=>r.json()).then(s=>{
-  lLoans.textContent=s.loansTotal; lSol.textContent=s.borrowedSol; lAcc.textContent=s.accounts; lFees.textContent=s.fees.total;
+  lLoans.textContent=s.loansTotal;lSol.textContent=s.borrowedSol;lAcc.textContent=s.accounts;lFees.textContent=s.fees.total;
 }).catch(()=>{});
 fetch('/api/catalog').then(r=>r.json()).then(c=>{
-  const items=c.catalog.filter(t=>t.enabled).map(t=>`<b>${t.sym}</b> $${t.price<0.01?t.price.toExponential(2):t.price.toFixed(4)}<i>·</i>`).join('');
-  tick.innerHTML=items+items;
+  const chip=t=>`<span class="chip">${t.sym}</span>`;
+  memeChips.innerHTML=c.catalog.filter(t=>t.cls==='meme'&&t.enabled).map(chip).join('');
+  rwaChips.innerHTML=c.catalog.filter(t=>t.cls==='rwa'&&t.enabled).map(chip).join('');
 }).catch(()=>{});
 </script>
 </body>
