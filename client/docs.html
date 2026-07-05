@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAVEN — documentation</title>
+<meta name="description" content="Technical documentation for RAVEN: architecture, loan lifecycle, tiers, the liquidation keeper, auto-protect, pricing, the credit system, fees, collateral catalog, custody, and the API.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,550;0,9..144,650;1,9..144,550&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef0f6;--panel:#fbfcff;--panel2:#e6e8f2;--ink:#151625;--sub:#48485f;--mut:#7a7b95;--dim:#a4a4bd;
+  --teal:#12b39a;--vi:#6a4be0;--mag:#c74dea;--line:rgba(21,22,37,.11);--line2:rgba(21,22,37,.2);--warn:#cf7a2c;--bad:#c93b52;
+  --wash:rgba(106,75,224,.08);--washt:rgba(18,179,154,.09)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:15px;line-height:1.65}
+.fr{font-family:'Fraunces',serif}.mo{font-family:'JetBrains Mono',monospace}
+a{color:inherit;text-decoration:none}
+.irid{background:linear-gradient(110deg,var(--teal),var(--vi) 55%,var(--mag));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+header{position:sticky;top:0;z-index:30;background:rgba(238,240,246,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hin{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:13px 22px}
+.mark{display:flex;align-items:center;gap:9px;font-family:'Fraunces';font-weight:650;font-size:19px}
+.hnav{display:flex;gap:18px;align-items:center;font-size:13.5px;font-weight:500;color:var(--sub)}
+.hnav a:hover{color:var(--vi)}
+.btn{display:inline-block;padding:9px 20px;border-radius:999px;font-weight:600;font-size:13px;cursor:pointer;border:none}
+.btn.acc{background:linear-gradient(110deg,var(--teal),var(--vi) 60%,var(--mag));color:#fbfcff}
+
+.layout{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:230px 1fr;gap:44px;padding:0 22px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.toc{display:none}}
+/* sidebar TOC */
+.toc{position:sticky;top:66px;height:calc(100vh - 66px);overflow-y:auto;padding:34px 0}
+.toc .tl{font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin:0 0 12px 10px}
+.toc a{display:block;padding:7px 12px;border-radius:8px;font-size:13.5px;color:var(--mut);border-left:2px solid transparent;margin-bottom:1px}
+.toc a:hover{color:var(--ink);background:rgba(21,22,37,.04)}
+.toc a.on{color:var(--vi);border-left-color:var(--vi);background:var(--wash);font-weight:600}
+/* content */
+.doc{padding:44px 0 90px;max-width:760px}
+.doc .lead{font-size:17px;color:var(--sub);margin:6px 0 20px;line-height:1.7}
+.doc h1{font-family:'Fraunces';font-weight:650;font-size:clamp(34px,5vw,50px);letter-spacing:-.02em;line-height:1.05}
+.doc .eyebrow{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--vi);margin-bottom:10px}
+section.s{padding:34px 0;border-top:1px solid var(--line);scroll-margin-top:80px}
+section.s:first-of-type{border-top:none}
+.s h2{font-family:'Fraunces';font-weight:650;font-size:28px;letter-spacing:-.01em;margin-bottom:6px}
+.s h2 .no{font-family:'JetBrains Mono';font-size:13px;font-weight:700;color:var(--dim);margin-right:12px}
+.s h3{font-family:'Fraunces';font-weight:650;font-size:18px;margin:22px 0 8px}
+.s p{color:var(--sub);margin:10px 0}
+.s p b,.s li b{color:var(--ink)}
+.s ul,.s ol{margin:10px 0 10px 4px;padding-left:20px;color:var(--sub)}
+.s li{margin:6px 0}
+code{font-family:'JetBrains Mono';font-size:.86em;background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1.5px 6px;color:var(--vi)}
+pre{background:#14131f;border-radius:12px;padding:18px 20px;overflow-x:auto;margin:14px 0;border:1px solid var(--line2)}
+pre code{background:none;border:none;color:#d8d6ea;padding:0;font-size:12.5px;line-height:1.75;display:block;white-space:pre}
+pre code .k{color:#8b7bff}pre code .g{color:#4de3c0}pre code .c{color:#6b6785}pre code .n{color:#e0a878}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+td{color:var(--sub)}td.mo{font-family:'JetBrains Mono';font-size:12.5px}
+td b,th.hl{color:var(--ink)}
+.callout{border-radius:12px;padding:16px 20px;margin:16px 0;font-size:13.5px;line-height:1.6}
+.callout.note{background:var(--wash);border:1px solid rgba(106,75,224,.25)}
+.callout.warn{background:rgba(207,122,44,.08);border:1px solid rgba(207,122,44,.3)}
+.callout.good{background:var(--washt);border:1px solid rgba(18,179,154,.28)}
+.callout .ct{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:6px}
+.callout.note .ct{color:var(--vi)}.callout.warn .ct{color:var(--warn)}.callout.good .ct{color:var(--teal)}
+.pipe{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0;font-family:'JetBrains Mono';font-size:12px}
+.pipe .st{background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:8px 13px}
+.pipe .ar{color:var(--dim)}
+.doc footer{border-top:1px solid var(--line);margin-top:30px;padding-top:24px;font-size:12.5px;color:var(--mut);line-height:1.8}
+</style>
+</head>
+<body>
+<header><div class="hin">
+  <a class="mark" href="/"><svg width="24" height="24" viewBox="0 0 32 32"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12b39a"/><stop offset=".5" stop-color="#6a4be0"/><stop offset="1" stop-color="#c74dea"/></linearGradient></defs><path d="M4 20 C7 8 20 4 29 7 L20 11 L28 13 L17 15 C14 22 9 25 3 27 C6 24 7 22 7.4 20.8 Z" fill="url(#rg)"/></svg>raven</a>
+  <div class="hnav">
+    <a href="/#borrow">Borrow</a><a href="/#tiers">Tiers</a><a href="/#why">Why RAVEN</a>
+    <a class="btn acc" href="/app">Open app</a>
+  </div>
+</div></header>
+
+<div class="layout">
+  <aside class="toc">
+    <div class="tl">Documentation</div>
+    <a href="#overview">Overview</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#lifecycle">Loan lifecycle</a>
+    <a href="#tiers">Tiers &amp; LTV</a>
+    <a href="#liquidation">Liquidation &amp; keeper</a>
+    <a href="#protect">Auto-protect</a>
+    <a href="#pricing">Pricing &amp; oracles</a>
+    <a href="#credit">Credit system</a>
+    <a href="#fees">Fees</a>
+    <a href="#catalog">Collateral catalog</a>
+    <a href="#custody">Custody &amp; security</a>
+    <a href="#api">API reference</a>
+    <a href="#disclosures">Disclosures</a>
+  </aside>
+
+  <main class="doc">
+    <div class="eyebrow">Technical documentation</div>
+    <h1>How the raven <span class="irid">works.</span></h1>
+    <p class="lead">RAVEN is a web-first lending protocol on Solana: borrow SOL against memecoins and tokenized
+      stocks, arm take-profits and stops on that same collateral, and build an on-chain credit score with every
+      clean repay. This page is the whole machine, end to end — nothing hand-waved.</p>
+
+    <section class="s" id="overview">
+      <h2><span class="no">01</span>Overview</h2>
+      <p>You hold assets that trade on Solana. RAVEN turns any of them into an instant SOL credit line without
+        making you sell. You <b>pledge</b> collateral, choose a <b>tier</b> (which fixes your loan-to-value,
+        term, and fee), and receive SOL. A published <b>liquidation price</b> is shown before you commit.
+        While the loan is open you can arm a <b>take-profit or stop-loss</b> on the collateral itself — a
+        keeper watches every 15 seconds and executes it for you, clearing the debt and returning the surplus.
+        Repay cleanly and your <b>credit score</b> climbs, unlocking higher LTV and lower fees.</p>
+      <div class="callout warn"><div class="ct">Paper protocol</div>
+        RAVEN is currently a <b>paper protocol</b>: prices and wallet balances are read live from mainnet, but
+        loans, balances, and settlement are simulated. Nothing is custodial and no signature is ever requested.
+        Real on-chain custody ships only after an audit — see <a href="#custody">Custody &amp; security</a>.</div>
+    </section>
+
+    <section class="s" id="architecture">
+      <h2><span class="no">02</span>Architecture</h2>
+      <p>RAVEN runs as a single dependency-free Node service plus a browser client. There is no framework, no
+        database server, and no background job runner — just a tight event loop.</p>
+      <ul>
+        <li><b>Price poller</b> — every 18s, one batched call to the Jupiter Price API values the full
+          collateral catalog and SOL in USD.</li>
+        <li><b>Loan engine</b> — quoting, opening, repaying, and closing loans; the credit ledger; the fee-split
+          ledger; and an append-only receipt log.</li>
+        <li><b>The keeper</b> — a 15-second tick that checks every open loan for take-profit, stop-loss,
+          health-floor, and term-expiry conditions and settles the ones that trip.</li>
+        <li><b>Live feed</b> — a hand-rolled WebSocket pushes every receipt and price update to connected
+          clients, so the dashboard and the landing page update in real time.</li>
+      </ul>
+      <div class="pipe"><span class="st">wallet read</span><span class="ar">→</span><span class="st">live price</span><span class="ar">→</span><span class="st">quote</span><span class="ar">→</span><span class="st">borrow</span><span class="ar">→</span><span class="st">keeper 15s</span><span class="ar">→</span><span class="st">resolution</span><span class="ar">→</span><span class="st">receipt</span></div>
+    </section>
+
+    <section class="s" id="lifecycle">
+      <h2><span class="no">03</span>Loan lifecycle</h2>
+      <ol>
+        <li><b>Connect or watch.</b> Connect a wallet (Phantom/Solflare — address only, no signature) or paste
+          any address in watch mode. RAVEN reads your real balances of catalog tokens and prices them live.
+          Empty wallets receive a paper demo bag so the protocol is instantly usable.</li>
+        <li><b>Quote.</b> Choose a token, an amount, and a tier. RAVEN returns the SOL principal, the fee, the
+          total repay amount, the term, and the exact <b>liquidation price</b> — all before you commit.</li>
+        <li><b>Borrow.</b> The collateral is locked; the SOL principal lands in your balance. The loan is now
+          open, with a fixed due date and liquidation price.</li>
+        <li><b>Manage.</b> Optionally arm a take-profit and/or stop-loss (see <a href="#protect">Auto-protect</a>).</li>
+        <li><b>Resolve</b>, one of four ways:
+          <ul>
+            <li><b>Repay</b> — pay the debt in SOL, reclaim your collateral. Credit <b>+40</b>.</li>
+            <li><b>Close via sell</b> — sell the collateral at the live price, clear the debt, keep the surplus. Credit <b>+40</b>.</li>
+            <li><b>Auto-sell</b> — your TP or SL fires; the keeper sells, clears debt, returns surplus. Credit <b>+20</b>.</li>
+            <li><b>Liquidation</b> — the health floor breaks or the term expires; the keeper sells to cover the debt (5% penalty on any surplus). Credit <b>−250</b>.</li>
+          </ul>
+        </li>
+      </ol>
+      <p>Every one of these writes a signed, append-only receipt to the public ledger.</p>
+    </section>
+
+    <section class="s" id="tiers">
+      <h2><span class="no">04</span>Tiers &amp; LTV</h2>
+      <p>Two collateral classes, each with three tiers. Volatile assets get lower LTV and short terms; lower-
+        volatility real-world assets get more capital, for longer. Fees are flat and quoted up front.</p>
+      <h3>Memecoins &amp; majors</h3>
+      <table><thead><tr><th class="hl">Tier</th><th>Max LTV</th><th>Term</th><th>Fee</th><th>Liq. buffer</th></tr></thead><tbody>
+        <tr><td><b>Express</b></td><td class="mo">30%</td><td class="mo">2 days</td><td class="mo">3.00%</td><td class="mo">1.10×</td></tr>
+        <tr><td><b>Quick</b></td><td class="mo">25%</td><td class="mo">3 days</td><td class="mo">2.00%</td><td class="mo">1.15×</td></tr>
+        <tr><td><b>Standard</b></td><td class="mo">20%</td><td class="mo">7 days</td><td class="mo">1.50%</td><td class="mo">1.15×</td></tr>
+      </tbody></table>
+      <h3>Tokenized stocks · ETFs · metals (RWA)</h3>
+      <table><thead><tr><th class="hl">Tier</th><th>Max LTV</th><th>Term</th><th>Fee</th><th>Liq. buffer</th></tr></thead><tbody>
+        <tr><td><b>RWA Express</b></td><td class="mo">50%</td><td class="mo">7 days</td><td class="mo">3.00%</td><td class="mo">1.08×</td></tr>
+        <tr><td><b>RWA Quick</b></td><td class="mo">60%</td><td class="mo">15 days</td><td class="mo">4.00%</td><td class="mo">1.10×</td></tr>
+        <tr><td><b>RWA Standard</b></td><td class="mo">70%</td><td class="mo">30 days</td><td class="mo">5.00%</td><td class="mo">1.12×</td></tr>
+      </tbody></table>
+      <p>The fee accrues in SOL and is baked into the repay total at open: <code>debt = principal × (1 + fee)</code>.
+        Credit tiers can lift your effective LTV and shave the fee — see <a href="#credit">Credit system</a>.</p>
+      <div class="callout note"><div class="ct">Class discipline</div>
+        A memecoin tier can't be applied to an RWA collateral and vice-versa — the engine rejects any quote or
+        borrow where the tier class and the token class don't match.</div>
+    </section>
+
+    <section class="s" id="liquidation">
+      <h2><span class="no">05</span>Liquidation &amp; the keeper</h2>
+      <p>Your liquidation price is computed at open and never moves. It's the collateral price at which the
+        position's value falls to the debt times the tier's liquidation buffer:</p>
+      <pre><code><span class="c">// at open</span>
+liqPrice = (debt × liqBuffer × solUsd) / collateralAmount
+
+<span class="c">// every keeper tick (15s), for each open loan</span>
+valueSol = collateralAmount × price / solUsd
+<span class="k">if</span> (valueSol &lt;= debt × liqBuffer)  <span class="g">liquidate()</span>
+<span class="k">if</span> (now &gt; dueAt)                   <span class="g">liquidate()</span>  <span class="c">// term expired</span></code></pre>
+      <p>On liquidation the collateral is sold at the live price, the debt is cleared, and any surplus is
+        returned to you minus a <b>5% liquidation penalty</b>. The <b>15-second</b> keeper cadence is deliberate —
+        it is six times faster than the ~90-second cadence common to comparable bots, which means tighter
+        execution on both your stops and your liquidation threshold.</p>
+    </section>
+
+    <section class="s" id="protect">
+      <h2><span class="no">06</span>Auto-protect (TP / SL)</h2>
+      <p>This is the differentiator: your collateral keeps working <b>while it's pledged</b>. On any open loan you
+        can arm a take-profit price, a stop-loss price, or both. The same keeper that watches for liquidation
+        watches your levels:</p>
+      <ul>
+        <li><b>Take-profit</b> — when the collateral price rises to your TP, the keeper sells, clears the debt,
+          and returns the surplus SOL to you. You've locked the gain without ever un-pledging.</li>
+        <li><b>Stop-loss</b> — when the price falls to your SL, the keeper sells early — on your terms, above the
+          liquidation price — so you exit before a forced liquidation and its penalty.</li>
+      </ul>
+      <p>A protected exit is credit-positive (<b>+20</b>), because you resolved the loan responsibly rather than
+        letting it be liquidated.</p>
+      <div class="callout good"><div class="ct">Why it matters</div>
+        A normal loan forces a choice: hold the collateral and risk liquidation, or repay early and lose the
+        upside. Auto-protect removes the choice — you get liquidity now, and your exit plan runs itself.</div>
+    </section>
+
+    <section class="s" id="pricing">
+      <h2><span class="no">07</span>Pricing &amp; oracles</h2>
+      <p>All collateral is valued in USD from the <b>Jupiter Price API (v3)</b> in a single batched request per
+        cycle, then converted to SOL using the live SOL/USD price from the same source. Tokenized stocks are
+        <b>Backed xStocks</b>, which trade on Solana and price through the same feed.</p>
+      <p>A token only becomes eligible collateral once it returns a live price at boot; anything unpriced is
+        automatically disabled, so a stale or missing feed can never produce a bad quote. Prices refresh every
+        18 seconds and stream to clients over WebSocket.</p>
+    </section>
+
+    <section class="s" id="credit">
+      <h2><span class="no">08</span>Credit system — "the raven remembers"</h2>
+      <p>Every wallet has an on-chain credit score from <b>0 to 1000</b>, starting at <b>300</b>. It moves with
+        your behavior, and it's the only thing that changes your terms — credit is earned by repaying, never
+        bought by holding.</p>
+      <table><thead><tr><th class="hl">Event</th><th>Δ Score</th></tr></thead><tbody>
+        <tr><td>Repay or close-via-sell (clean)</td><td class="mo" style="color:var(--teal)">+40</td></tr>
+        <tr><td>Protected exit (TP / SL fired)</td><td class="mo" style="color:var(--teal)">+20</td></tr>
+        <tr><td>Late / expired</td><td class="mo" style="color:var(--warn)">−80</td></tr>
+        <tr><td>Liquidation</td><td class="mo" style="color:var(--bad)">−250</td></tr>
+      </tbody></table>
+      <h3>Tiers</h3>
+      <table><thead><tr><th class="hl">Score</th><th>Tier</th><th>Benefit</th></tr></thead><tbody>
+        <tr><td class="mo">0–599</td><td><b>Hatchling</b></td><td>Base terms</td></tr>
+        <tr><td class="mo">600–799</td><td><b>Fledged</b></td><td><b>+2% LTV</b> on every tier</td></tr>
+        <tr><td class="mo">800–1000</td><td><b>Unkindness</b></td><td><b>+4% LTV</b> and <b>−25 bps</b> fee</td></tr>
+      </tbody></table>
+      <p>The bonus is applied at quote time: your effective LTV is the tier LTV plus your credit tier's bonus,
+        and your fee is the tier fee minus the credit discount (floored at 0.50%).</p>
+    </section>
+
+    <section class="s" id="fees">
+      <h2><span class="no">09</span>Fees</h2>
+      <p>Every loan fee splits four ways, recorded on the ledger:</p>
+      <table><thead><tr><th class="hl">Share</th><th>Recipient</th><th>Purpose</th></tr></thead><tbody>
+        <tr><td class="mo" style="color:var(--teal)">70%</td><td><b>$RAVEN holders</b></td><td>Pro-rata to holders — no staking, no claim ritual</td></tr>
+        <tr><td class="mo">20%</td><td><b>LP pool</b></td><td>The SOL that funds every loan</td></tr>
+        <tr><td class="mo">5%</td><td><b>Referral</b></td><td>Paid to the referrer of the borrower, for life</td></tr>
+        <tr><td class="mo">5%</td><td><b>Protocol</b></td><td>Keeps the service and keeper running</td></tr>
+      </tbody></table>
+      <p>Referrals are captured with a <code>?ref=&lt;wallet&gt;</code> parameter at first registration. If a
+        borrower has no referrer, that 5% rolls into the protocol share. Holder distributions activate at token
+        launch; accrual is already live on the ledger today.</p>
+    </section>
+
+    <section class="s" id="catalog">
+      <h2><span class="no">10</span>Collateral catalog</h2>
+      <p>Live, curated, and expanding. Every entry is validated against a live price before it's enabled.</p>
+      <h3>Memecoins &amp; majors</h3>
+      <p id="memeList" class="mo" style="font-size:13px;color:var(--sub)">BONK · WIF · JUP · POPCAT · PENGU · TRUMP · PUMP · MAGPIE · ATLAS</p>
+      <h3>Tokenized stocks · ETFs · metals</h3>
+      <p id="rwaList" class="mo" style="font-size:13px;color:var(--sub)">AAPLx · NVDAx · TSLAx · COINx · MSTRx · METAx · GOOGLx · SPYx · GLDx · HOODx</p>
+      <div class="callout note"><div class="ct">Yes, really</div>
+        $MAGPIE is an accepted collateral on RAVEN. No hard feelings. 🪶</div>
+    </section>
+
+    <section class="s" id="custody">
+      <h2><span class="no">11</span>Custody &amp; security</h2>
+      <p>RAVEN's trust model is the whole pitch, so it's worth being blunt about it.</p>
+      <ul>
+        <li><b>No keys, ever.</b> Connecting a wallet uses <code>provider.connect()</code> to read your public
+          address only. RAVEN never requests a transaction signature and cannot move your funds. Compare that to
+          a custodial Telegram bot where "your wallet is the bot wallet."</li>
+        <li><b>Paper today.</b> In the current phase, loans and balances are simulated on real, live prices.
+          Nothing you do here touches your on-chain assets — which means nothing here can lose them.</li>
+        <li><b>Audit before custody.</b> Real on-chain lending and custody ship only after a third-party audit
+          of the on-chain program. Until then, every "paper" label on the site is literal and intentional.</li>
+        <li><b>Everything is a receipt.</b> Borrows, repays, auto-sells, liquidations, and fee splits are all
+          written to an append-only public ledger and streamed live. Nothing happens off the record.</li>
+      </ul>
+    </section>
+
+    <section class="s" id="api">
+      <h2><span class="no">12</span>API reference</h2>
+      <p>Read endpoints are open. Actions take a JSON body over POST.</p>
+      <table><thead><tr><th class="hl">Endpoint</th><th>Method</th><th>Returns</th></tr></thead><tbody>
+        <tr><td class="mo">/api/config</td><td class="mo">GET</td><td>tiers, fee split, credit params</td></tr>
+        <tr><td class="mo">/api/catalog</td><td class="mo">GET</td><td>collateral list + live prices</td></tr>
+        <tr><td class="mo">/api/stats</td><td class="mo">GET</td><td>protocol totals, LP, fees</td></tr>
+        <tr><td class="mo">/api/quote</td><td class="mo">GET</td><td>principal, fee, debt, liq price</td></tr>
+        <tr><td class="mo">/api/account</td><td class="mo">GET</td><td>vault, loans, credit</td></tr>
+        <tr><td class="mo">/api/receipts</td><td class="mo">GET</td><td>recent ledger receipts</td></tr>
+        <tr><td class="mo">/api/register</td><td class="mo">POST</td><td>read a wallet's bag</td></tr>
+        <tr><td class="mo">/api/borrow</td><td class="mo">POST</td><td>open a loan</td></tr>
+        <tr><td class="mo">/api/protect</td><td class="mo">POST</td><td>arm TP / SL</td></tr>
+        <tr><td class="mo">/api/repay</td><td class="mo">POST</td><td>repay in SOL</td></tr>
+        <tr><td class="mo">/api/close</td><td class="mo">POST</td><td>close via sell</td></tr>
+      </tbody></table>
+      <p>Example — quote a loan:</p>
+      <pre><code><span class="c"># 300 WIF, Express tier, credit 300</span>
+<span class="k">GET</span> /api/quote?mint=&lt;WIF_MINT&gt;&amp;amount=300&amp;tier=express&amp;credit=300
+
+<span class="g">{</span> <span class="k">"tier"</span>:<span class="n">"Express"</span>, <span class="k">"ltv"</span>:0.30, <span class="k">"principal"</span>:0.198,
+  <span class="k">"fee"</span>:0.0059, <span class="k">"debt"</span>:0.204, <span class="k">"liqPriceUsd"</span>:0.0618,
+  <span class="k">"days"</span>:2, <span class="k">"creditTier"</span>:<span class="n">"Hatchling"</span> <span class="g">}</span></code></pre>
+    </section>
+
+    <section class="s" id="disclosures">
+      <h2><span class="no">13</span>Disclosures</h2>
+      <p>RAVEN is an experimental, <b>paper</b> lending protocol. Prices and wallet reads are real; loans,
+        balances, settlement, and custody are simulated until an on-chain program is audited and deployed.
+        <b>$RAVEN is a memecoin</b> with no promise of value, yield, or profit, and nothing here is financial
+        advice. Tokenized stocks referenced are Backed xStocks priced via Jupiter and are not offered, endorsed,
+        or issued by RAVEN. Never risk what you can't afford to lose. The raven remembers — and so does the chain.</p>
+      <footer>
+        <b>raven 🪶</b> · <a href="/" style="text-decoration:underline">home</a> · <a href="/app" style="text-decoration:underline">app</a><br>
+        Web-first lending on Solana. Borrow against your bag. The raven remembers.
+      </footer>
+    </section>
+  </main>
+</div>
+
+<script>
+// live catalog into the two lists
+fetch('/api/catalog').then(r=>r.json()).then(c=>{
+  const meme=c.catalog.filter(t=>t.cls==='meme'&&t.enabled).map(t=>t.sym).join(' · ');
+  const rwa=c.catalog.filter(t=>t.cls==='rwa'&&t.enabled).map(t=>t.sym).join(' · ');
+  if(meme)document.getElementById('memeList').textContent=meme;
+  if(rwa)document.getElementById('rwaList').textContent=rwa;
+}).catch(()=>{});
+// scrollspy
+const links=[...document.querySelectorAll('.toc a')];
+const map={};links.forEach(a=>map[a.getAttribute('href').slice(1)]=a);
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('on'));map[e.target.id]&&map[e.target.id].classList.add('on')}});
+},{rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('section.s').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

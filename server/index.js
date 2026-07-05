@@ -389,7 +389,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // static
-  let f = u === '/' ? '/index.html' : u === '/app' ? '/app.html' : u;
+  let f = u === '/' ? '/index.html' : u === '/app' ? '/app.html' : (u === '/docs' || u === '/docs/') ? '/docs.html' : u;
   f = path.normalize(f).replace(/^([.\\/])+/, '');
   const fp = path.join(CLIENT, f);
   if (!fp.startsWith(CLIENT)) { res.writeHead(403); return res.end(); }
