@@ -20,6 +20,8 @@ const SIZES = {
   'raven-tiers': [2400, 1350],
   'raven-credit': [2400, 1350],
   'raven-vs': [2400, 1350],
+  'raven-nevermore': [2400, 1350],
+  'raven-nevermore-how': [2400, 1350],
 };
 
 const only = process.argv[2];

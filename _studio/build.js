@@ -230,6 +230,84 @@ assets['raven-vs'] = page(2400, 1350, `
      <div class="foot">we even accept their token as collateral. no hard feelings. 🪶 · ravenloans.xyz</div>
    </div>`);
 
+// ── the Nevermore orb ── glowing iridescent sphere with halo + orbit rings
+function orb(size, id) {
+  const s = size, cx = s / 2, cy = s / 2, r = s * 0.3;
+  return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" style="overflow:visible">
+    <defs>
+      <radialGradient id="${id}h" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="rgba(106,75,224,.4)"/><stop offset="1" stop-color="rgba(106,75,224,0)"/></radialGradient>
+      <radialGradient id="${id}c" cx="36%" cy="32%" r="72%"><stop offset="0" stop-color="#ffffff"/><stop offset=".42" stop-color="#8b7bff"/><stop offset="1" stop-color="#c74dea"/></radialGradient>
+    </defs>
+    <circle cx="${cx}" cy="${cy}" r="${r * 2.2}" fill="url(#${id}h)"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="${r * 1.75}" ry="${r * 0.62}" fill="none" stroke="rgba(106,75,224,.4)" stroke-width="${s * 0.006}" transform="rotate(-18 ${cx} ${cy})"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="${r * 1.55}" ry="${r * 0.5}" fill="none" stroke="rgba(18,179,154,.35)" stroke-width="${s * 0.005}" transform="rotate(22 ${cx} ${cy})"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#${id}c)" style="filter:drop-shadow(0 ${s * 0.03}px ${s * 0.06}px rgba(106,75,224,.4))"/>
+    <circle cx="${cx - r * 0.34}" cy="${cy - r * 0.38}" r="${r * 0.2}" fill="rgba(255,255,255,.92)"/>
+    <circle cx="${cx + r * 1.75 * Math.cos(-0.31) * 0.955}" cy="${cy - r * 1.75 * Math.sin(-0.31) * 0.34}" r="${s * 0.02}" fill="#c74dea"/>
+  </svg>`;
+}
+
+// 8) MEET NEVERMORE 2400×1350 — the announcement hero
+assets['raven-nevermore'] = page(2400, 1350, `
+  .wrap{position:absolute;inset:0;display:flex;align-items:center;gap:40px;padding:0 130px}
+  .name{font-family:'Fraunces';font-weight:650;font-size:176px;letter-spacing:-.03em;line-height:.94}
+  .sub{font-size:37px;color:var(--sub);max-width:1080px;line-height:1.5;margin-top:28px}
+  .sub b{color:var(--ink)}
+  .row{display:flex;gap:16px;margin-top:34px;flex-wrap:wrap}
+  .dom{font-family:'JetBrains Mono';font-size:34px;font-weight:700;color:var(--vi);margin-top:38px;letter-spacing:.06em}`,
+  `<div class="wrap">
+     <div style="flex:none">${orb(620, 'onm')}</div>
+     <div>
+       <div class="eyebrow" style="font-size:30px;margin-bottom:18px">◆ new · the ai credit engine ◆</div>
+       <div class="name">Meet <span class="grad">Nevermore.</span></div>
+       <div class="sub">The raven doesn’t just remember — now it <b>thinks.</b> It reads your entire bag and
+         structures your <b>optimal loan in one click</b>: what to pledge, which tier, how much SOL, and exactly where to set your stops.</div>
+       <div class="row">${chip('READS YOUR BAG')}${chip('STRUCTURES THE LOAN', 'var(--teal)')}${chip('SETS YOUR STOPS', 'var(--mag)')}</div>
+       <div class="dom">ravenloans.xyz · $RAVEN</div>
+     </div>
+   </div>`);
+
+// 9) AI PROPOSES → RULES ENFORCE 2400×1350 — the how-it-works / trust mechanic
+const propRow = (k, v) => `<div style="display:flex;justify-content:space-between;align-items:baseline;padding:20px 0;border-bottom:1px solid var(--line)">
+  <span style="font-size:30px;color:var(--mut)">${k}</span><span class="mo" style="font-size:31px;font-weight:700;color:var(--sub)">${v}</span></div>`;
+const enfRow = (k, v, note) => `<div style="padding:18px 0;border-bottom:1px solid var(--line)">
+  <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:30px;color:var(--mut)">${k}</span><span class="mo" style="font-size:31px;font-weight:700;color:var(--teal)">${v}</span></div>
+  <div style="font-size:22px;color:var(--mut);margin-top:6px">${note}</div></div>`;
+assets['raven-nevermore-how'] = page(2400, 1350, `
+  .wrap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 110px;gap:44px}
+  .h{font-family:'Fraunces';font-weight:650;font-size:92px;letter-spacing:-.02em;text-align:center}
+  .cols{display:flex;gap:34px;align-items:stretch}
+  .card{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:44px 46px}
+  .card.e{border:2px solid rgba(18,179,154,.42);box-shadow:0 0 50px rgba(18,179,154,.1)}
+  .ch{display:flex;align-items:center;gap:22px;margin-bottom:14px}
+  .ct{font-family:'Fraunces';font-weight:650;font-size:50px}
+  .tick{width:52px;height:52px;border-radius:50%;background:var(--teal);color:#fff;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+  .arw{align-self:center;font-size:80px;font-weight:800;color:var(--vi);flex:none}
+  .foot{font-family:'JetBrains Mono';font-size:29px;color:var(--mut);text-align:center;letter-spacing:.03em}
+  .foot b{color:var(--ink)}`,
+  `<div class="wrap">
+     <div><div class="eyebrow" style="font-size:29px;text-align:center;margin-bottom:14px">◆ how nevermore works ◆</div>
+       <div class="h">The AI proposes. The <span class="grad">rules enforce.</span></div></div>
+     <div class="cols">
+       <div class="card">
+         <div class="ch"><div style="flex:none">${orb(96, 'ohp')}</div><div class="ct">AI proposes</div></div>
+         ${propRow('tier', 'Quick · 25%')}
+         ${propRow('pledge', '50% of SPYx')}
+         ${propRow('stop-loss', '$611.00')}
+         ${propRow('take-profit', '$1,044')}
+       </div>
+       <div class="arw">→</div>
+       <div class="card e">
+         <div class="ch"><div class="tick">✓</div><div class="ct">The engine enforces</div></div>
+         ${enfRow('tier', '→ RWA Standard', 'SPYx is an RWA — memecoin tiers rejected')}
+         ${enfRow('amount', '✓ clamped to free', 'never over-pledges your balance')}
+         ${enfRow('liquidation', '→ recomputed $616.81', 'from the real quote, not the AI')}
+         ${enfRow('stop-loss', '→ raised above liq', '$683.04 — safe by design')}
+       </div>
+     </div>
+     <div class="foot">it advises · it re-checks every number · <b>it can never move your funds</b> · ravenloans.xyz</div>
+   </div>`);
+
 for (const [name, html] of Object.entries(assets)) {
   fs.writeFileSync(path.join(OUT, name + '.html'), html);
   console.log('wrote', name + '.html');
