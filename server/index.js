@@ -18,6 +18,11 @@ const MINT = process.env.RAVEN_MINT || 'irP71XdKsT39Mmntx3STCqwMhrUsfC9bWNeB8tGp
 const RPC = process.env.RPC_URL || 'https://api.mainnet-beta.solana.com';
 const PRICE_URL = 'https://lite-api.jup.ag/price/v3?ids=';
 const SOL_MINT = 'So11111111111111111111111111111111111111112';
+// ---------- NEVERMORE — the AI credit engine (Anthropic) ----------
+const AI_KEY = (process.env.ANTHROPIC_API_KEY || '').trim();
+const AI_MODEL = process.env.NEVERMORE_MODEL || 'claude-haiku-4-5-20251001';
+const AI_MOCK = !AI_KEY && process.env.NEVERMORE_MOCK === '1'; // dev-only UI verification, no LLM
+const AI_ON = !!AI_KEY || AI_MOCK;
 
 // ---------- protocol parameters (published, deterministic) ----------
 // memecoins: volatile → lower LTV, short terms. RWAs (tokenized stocks/ETFs/metals):
@@ -316,6 +321,82 @@ function stats() {
   };
 }
 
+// ---------- NEVERMORE — AI credit engine ----------
+// The model PROPOSES a loan structure; the deterministic quote() engine VALIDATES and
+// computes every real number. The AI never touches funds — it reads and recommends only.
+async function callClaude(system, user, maxTokens) {
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'x-api-key': AI_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+    body: JSON.stringify({ model: AI_MODEL, max_tokens: maxTokens || 700, system, messages: [{ role: 'user', content: user }] }),
+  });
+  if (!r.ok) throw new Error('anthropic http ' + r.status + ' ' + (await r.text()).slice(0, 200));
+  const j = await r.json();
+  return (j.content || []).map((c) => c.text || '').join('').trim();
+}
+function bagContext(wallet) {
+  const acc = pubAccount(wallet); if (!acc) return null;
+  const holdings = Object.entries(acc.vault)
+    .filter(([, v]) => v.free > 0 && v.priceUsd > 0)
+    .map(([sym, v]) => {
+      const c = CATALOG.find((x) => x.sym === sym);
+      return { sym, cls: c ? c.cls : 'meme', free: v.free, priceUsd: v.priceUsd, usd: r2(v.free * v.priceUsd) };
+    });
+  const openLoans = acc.loans.filter((l) => l.status === 'open')
+    .map((l) => ({ sym: l.sym, debtSol: l.debt, nowUsd: l.priceUsd, liqUsd: l.liqPriceUsd, health: l.healthPct, tp: l.tp, sl: l.sl }));
+  return { credit: acc.credit, creditTier: acc.creditTier, solUsd: r2(SOLP), holdings, openLoans, sol: acc.sol };
+}
+const TIER_LINES = Object.entries(TIERS)
+  .map(([k, t]) => `${k} (${t.cls}): ${(t.ltv * 100).toFixed(0)}% LTV, ${t.days}d, ${(t.feeBps / 100).toFixed(2)}% fee, liq buffer ${t.liqBuffer}`).join('\n');
+async function advise(wallet) {
+  if (!AI_ON) return { enabled: false };
+  const ctx = bagContext(wallet);
+  if (!ctx || !ctx.holdings.length) return { enabled: true, empty: true, message: 'No priceable collateral in this wallet yet.' };
+  let rec;
+  if (AI_MOCK) {
+    const top = [...ctx.holdings].sort((a, b) => b.usd - a.usd)[0];
+    rec = { pickSym: top.sym, tier: top.cls === 'rwa' ? 'rwa_standard' : 'quick', pledgeFraction: top.cls === 'rwa' ? 0.9 : 0.5,
+      tpUsd: r6(top.priceUsd * 1.4), slUsd: r6(top.priceUsd * 0.82),
+      headline: `Pledge half your ${top.sym} — quick tier, room to breathe`,
+      reasoning: `${top.sym} is your deepest position at $${top.usd}. Pledging half keeps a reserve while the Quick tier gives you a comfortable 3-day window and a gentler ratio. Your stop sits well above the liquidation line.`,
+      risk: `You're liquidated only if ${top.sym} falls sharply before the stop fires.` };
+  } else {
+  const system = `You are Nevermore, RAVEN's AI credit engine. RAVEN lets users borrow SOL against tokens without selling, with in-loan take-profit/stop-loss and a keeper checking every 15s. You PROPOSE a loan; deterministic rules enforce it. Tiers:\n${TIER_LINES}\nMemecoin tiers only apply to 'meme' collateral, RWA tiers only to 'rwa'. You value safety: recommend an amount of collateral to pledge (never all of it for volatile memes), a tier, and TP/SL levels that make sense vs current price and the liquidation buffer. Be sharp, confident, and concise. Return ONLY minified JSON, no prose, no markdown.`;
+  const user = `Wallet context (JSON):\n${JSON.stringify(ctx)}\n\nRecommend the single best loan to open right now. Return ONLY this JSON shape:\n{"pickSym":"<symbol from holdings>","tier":"<tier key>","pledgeFraction":<0..1 of that token's free balance>,"tpUsd":<take-profit price or null>,"slUsd":<stop-loss price or null>,"headline":"<8-12 word punchy summary>","reasoning":"<2-3 sentences, plain English, why this pick/tier/amount>","risk":"<1 sentence on the liquidation risk>"}`;
+  let raw = await callClaude(system, user, 700);
+  const m = raw.match(/\{[\s\S]*\}/); if (m) raw = m[0];
+  rec = JSON.parse(raw);
+  }
+  // ---- validate every number against the real engine ----
+  const c = CATALOG.find((x) => x.sym === rec.pickSym);
+  const h = ctx.holdings.find((x) => x.sym === rec.pickSym);
+  if (!c || !h || !TIERS[rec.tier]) throw new Error('advisor picked something invalid');
+  if (TIERS[rec.tier].cls !== c.cls) rec.tier = c.cls === 'rwa' ? 'rwa_standard' : 'standard';
+  const frac = Math.max(0.05, Math.min(1, +rec.pledgeFraction || 0.5));
+  const amount = r4(h.free * frac);
+  const q = quote(c.mint, amount, rec.tier, ctx.credit);
+  if (!q) throw new Error('quote failed for advised loan');
+  // clamp TP/SL to sane bounds (sl above liq, below price; tp above price)
+  let sl = +rec.slUsd || 0, tp = +rec.tpUsd || 0;
+  if (!(sl > q.liqPriceUsd && sl < h.priceUsd)) sl = r6((q.liqPriceUsd + h.priceUsd) / 2);
+  if (!(tp > h.priceUsd)) tp = r6(h.priceUsd * 1.35);
+  return {
+    enabled: true,
+    ai: { headline: String(rec.headline || '').slice(0, 120), reasoning: String(rec.reasoning || '').slice(0, 400), risk: String(rec.risk || '').slice(0, 240) },
+    rec: { sym: c.sym, mint: c.mint, tier: rec.tier, tierLabel: q.tier, amount, principal: q.principal, debt: q.debt,
+      liqPriceUsd: q.liqPriceUsd, priceUsd: q.priceUsd, days: q.days, ltv: q.ltv, tp, sl },
+  };
+}
+async function ask(wallet, question) {
+  if (!AI_ON) return { enabled: false };
+  if (AI_MOCK) return { enabled: true, answer: `Nevermore (demo): borrow against your lowest-volatility holding first, keep pledges to half your position on memecoins, and always arm a stop above the liquidation line. Connect the AI engine for a full answer to: "${String(question || '').slice(0, 120)}".` };
+  const ctx = wallet && isWallet(wallet) ? bagContext(wallet) : null;
+  const system = `You are Nevermore, RAVEN's AI lending copilot on Solana. RAVEN: borrow SOL against memecoins (to 30% LTV) & tokenized stocks (to 70% LTV, 30d), in-loan TP/SL, 15s keeper, on-chain credit score, non-custodial (no signatures). Tiers:\n${TIER_LINES}\nAnswer as a sharp, concise lending desk. Use the user's bag if provided. Never invent numbers — reason from the context. 2-5 sentences. No markdown headers.`;
+  const user = (ctx ? `User's bag (JSON): ${JSON.stringify(ctx)}\n\n` : '') + `Question: ${String(question || '').slice(0, 500)}`;
+  const text = await callClaude(system, user, 500);
+  return { enabled: true, answer: text.slice(0, 900) };
+}
+
 // ---------- hand-rolled WebSocket ----------
 const socks = new Set();
 function frame(str) {
@@ -336,7 +417,18 @@ const server = http.createServer(async (req, res) => {
   const u = req.url.split('?')[0];
   const qs = new URLSearchParams(req.url.split('?')[1] || '');
 
-  if (u === '/api/config') return json(res, 200, { token: TOKEN, mint: MINT, paper: true, tiers: TIERS, feeSplit: FEE_SPLIT, credit: CREDIT, keeperMs: KEEPER_MS });
+  if (u === '/api/config') return json(res, 200, { token: TOKEN, mint: MINT, paper: true, tiers: TIERS, feeSplit: FEE_SPLIT, credit: CREDIT, keeperMs: KEEPER_MS, ai: AI_ON });
+  if (u === '/api/advise') {
+    const w = qs.get('wallet');
+    if (!isWallet(w)) return json(res, 400, { error: 'invalid wallet' });
+    try { return json(res, 200, await advise(w)); }
+    catch (e) { return json(res, 200, { enabled: AI_ON, error: 'nevermore is thinking too hard — try again', detail: e.message }); }
+  }
+  if (req.method === 'POST' && u === '/api/ask') {
+    const p = await body(req);
+    try { return json(res, 200, await ask(p.wallet, p.q)); }
+    catch (e) { return json(res, 200, { enabled: AI_ON, error: 'nevermore could not answer — try again', detail: e.message }); }
+  }
   if (u === '/api/stats') return json(res, 200, stats());
   if (u === '/api/catalog') return json(res, 200, { catalog: catalogPub(), solUsd: r2(SOLP) });
   if (u === '/api/receipts') return json(res, 200, { receipts: db.receipts.slice(-(+qs.get('n') || 40)).reverse() });

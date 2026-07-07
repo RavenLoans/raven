@@ -61,6 +61,29 @@ a{color:inherit;text-decoration:none}
 .sc .v{font-family:'Fraunces';font-weight:650;font-size:26px;letter-spacing:-.02em;margin-top:7px}
 .sc .s{font-size:11px;color:var(--mut);margin-top:3px}
 .sc.hl{background:linear-gradient(140deg,#e9f7f3,#f1ebfc);border-color:rgba(107,87,214,.25)}
+/* nevermore AI copilot */
+.nm{grid-column:1/-1;margin-top:2px;border-radius:18px;padding:2px;background:linear-gradient(120deg,var(--teal),var(--vi) 50%,var(--mag));box-shadow:0 10px 40px rgba(106,75,224,.16)}
+.nm .in{background:var(--panel);border-radius:16px;padding:20px 24px}
+.nm .hd{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.nm .orb{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--vi) 55%,var(--mag));box-shadow:0 0 16px rgba(106,75,224,.5);animation:nmpulse 3s ease-in-out infinite;flex:none}
+@keyframes nmpulse{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.08);opacity:1}}
+.nm .ttl{font-family:'Fraunces';font-weight:650;font-size:20px}
+.nm .tag{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.16em;color:var(--vi);text-transform:uppercase;border:1px solid var(--line2);border-radius:999px;padding:3px 9px}
+.nm .lede{color:var(--sub);font-size:13.5px;margin:6px 0 14px}
+.nm .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.nm input{flex:1;min-width:220px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-family:'Inter';font-size:14px;outline:none}
+.nm input:focus{border-color:var(--vi)}
+.nm .rec{margin-top:14px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:none}
+.nm .rec.show{display:block}
+.nm .rec .hl2{font-family:'Fraunces';font-weight:650;font-size:17px;margin-bottom:6px}
+.nm .rec .rs{font-size:13.5px;color:var(--sub);line-height:1.55}
+.nm .rec .rk{font-size:12.5px;color:var(--warn);margin-top:8px}
+.nm .rec .nums{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0;font-family:'JetBrains Mono';font-size:13px}
+.nm .rec .nums b{color:var(--ink)} .nm .rec .nums .lq{color:var(--warn)}
+.nm .rec .act{display:flex;gap:10px;margin-top:6px}
+.nm .ans{margin-top:12px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:13.5px;color:var(--sub);line-height:1.6;display:none}
+.nm .ans.show{display:block}
+.nm .think{font-family:'JetBrains Mono';font-size:12px;color:var(--vi)}
 /* panels + sections */
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:0 1px 2px rgba(23,20,31,.04);margin-bottom:18px}
 h3.sec{font-family:'Fraunces';font-weight:650;font-size:20px;margin-bottom:14px;display:flex;align-items:center;gap:9px}
@@ -173,6 +196,20 @@ input:focus,select:focus{border-color:var(--vi)}
         <div class="sc hl"><div class="k">Credit score</div><div class="v irid" id="stCredit">—</div><div class="s" id="stCreditS">connect to begin</div></div>
       </div>
 
+      <div class="nm" id="nevermore" style="display:none">
+        <div class="in">
+          <div class="hd"><div class="orb"></div><div class="ttl">Nevermore</div><span class="tag">AI credit engine</span></div>
+          <div class="lede">The raven doesn't just remember — it thinks. Nevermore reads your bag and structures your optimal loan: what to pledge, which tier, how much, and where to set your stops. It proposes; the rules enforce.</div>
+          <div class="row">
+            <button class="btn acc" id="nmStructure">✦ Structure my loan</button>
+            <input id="nmAsk" placeholder="…or ask anything: “what's my safest borrow?”" />
+            <button class="btn gh" id="nmAskGo">Ask</button>
+          </div>
+          <div class="rec" id="nmRec"></div>
+          <div class="ans" id="nmAns"></div>
+        </div>
+      </div>
+
       <div class="colL">
         <div class="panel" id="loans">
           <h3 class="sec">Active Loans <span class="cnt" id="pCount">0</span></h3>
@@ -240,8 +277,9 @@ let CATALOG=[],ACC=null,TIER='standard',TIERS={},WALLET=localStorage.ravenWallet
 let toastT;function toast(m,err){const t=$('#toast');t.textContent=m;t.className='show'+(err?' err':'');clearTimeout(toastT);toastT=setTimeout(()=>t.className='',3400)}
 async function api(p,body){const r=await fetch(p,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:{});const j=await r.json();if(!r.ok)throw new Error(j.error||'request failed');return j}
 
+let AI_ON=false;
 async function boot(){
-  const cfg=await api('/api/config');TIERS=cfg.tiers;
+  const cfg=await api('/api/config');TIERS=cfg.tiers;AI_ON=!!cfg.ai;
   await refreshCatalog();renderTierCards();await refreshTape();drawGauge(0);
   const qw=new URLSearchParams(location.search).get('wallet');if(qw)WALLET=qw;
   if(WALLET)load(WALLET);
@@ -276,7 +314,9 @@ async function load(w){
     $('#cbanner').style.display='none';
     $('#wpill').classList.add('live');$('#wtext').textContent=w.slice(0,4)+'…'+w.slice(-4);
     $('#btnConnect').textContent='Refresh bag';
+    $('#nevermore').style.display=AI_ON?'block':'none';
     render();toast('the raven has read your bag');
+    if(AI_ON&&new URLSearchParams(location.search).get('nm'))setTimeout(()=>$('#nmStructure').click(),900);
   }catch(e){toast(e.message,1)}
 }
 async function refreshAccount(){try{const r=await api('/api/account?wallet='+WALLET);if(r.account){ACC=r.account;render()}}catch(e){}}
@@ -389,6 +429,49 @@ $('#bGo').onclick=async()=>{
     ACC=r.account;toast('borrowed '+r.loan.principal+' SOL — liq at '+px(r.loan.liqPriceUsd));$('#bAmt').value='';render();
   }catch(e){toast(e.message,1)}
 };
+// ---------- Nevermore AI copilot ----------
+let NM_REC=null;
+$('#nmStructure').onclick=async()=>{
+  if(!WALLET)return toast('connect first',1);
+  const rec=$('#nmRec');rec.className='rec show';rec.innerHTML='<span class="think">✦ Nevermore is reading your bag…</span>';
+  try{
+    const d=await api('/api/advise?wallet='+WALLET);
+    if(d.enabled===false)return rec.innerHTML='<span class="rs">Nevermore activates once the AI engine is connected.</span>';
+    if(d.empty)return rec.innerHTML='<span class="rs">'+esc(d.message||'No priceable collateral yet.')+'</span>';
+    if(d.error)return rec.innerHTML='<span class="rs">'+esc(d.error)+'</span>';
+    NM_REC=d.rec;
+    rec.innerHTML=`<div class="hl2">✦ ${esc(d.ai.headline)}</div>
+      <div class="rs">${esc(d.ai.reasoning)}</div>
+      <div class="nums">
+        <span>pledge <b>${fmt(d.rec.amount)} ${d.rec.sym}</b></span>
+        <span>tier <b>${esc(d.rec.tierLabel)}</b> (${(d.rec.ltv*100).toFixed(0)}%)</span>
+        <span>receive <b>${d.rec.principal} SOL</b></span>
+        <span>repay <b>${d.rec.debt} SOL</b> · ${d.rec.days}d</span>
+        <span class="lq">liq ${px(d.rec.liqPriceUsd)}</span>
+        <span>TP ${px(d.rec.tp)} · SL ${px(d.rec.sl)}</span>
+      </div>
+      <div class="rk">⚠ ${esc(d.ai.risk)}</div>
+      <div class="act"><button class="btn acc sm" onclick="nmApply()">Apply this loan →</button>
+      <button class="btn gh sm" onclick="$('#nmRec').className='rec'">Dismiss</button></div>`;
+  }catch(e){rec.innerHTML='<span class="rs">Nevermore hit a snag — try again.</span>'}
+};
+window.nmApply=()=>{
+  if(!NM_REC)return;
+  const c=CATALOG.find(x=>x.sym===NM_REC.sym);if(!c)return;
+  setTier(NM_REC.tier);
+  const opt=[...$('#bTok').options].find(o=>o.value===c.mint);if(opt)$('#bTok').value=c.mint;
+  renderTierCards();$('#bAmt').value=NM_REC.amount;quote();
+  document.getElementById('borrow').scrollIntoView({behavior:'smooth'});
+  toast('Nevermore filled the form — review the quote, then Borrow. arm TP $'+ (NM_REC.tp) +' / SL $'+(NM_REC.sl)+' after.');
+};
+$('#nmAskGo').onclick=async()=>{
+  const q=$('#nmAsk').value.trim();if(!q)return;
+  const ans=$('#nmAns');ans.className='ans show';ans.innerHTML='<span class="think">✦ thinking…</span>';
+  try{const d=await api('/api/ask',{wallet:WALLET,q});
+    ans.textContent=d.enabled===false?'Nevermore activates once the AI engine is connected.':(d.error?d.error:d.answer);
+  }catch(e){ans.textContent='Nevermore could not answer — try again.'}
+};
+$('#nmAsk').addEventListener('keydown',e=>{if(e.key==='Enter')$('#nmAskGo').click()});
 // stats fetch for global fee card
 async function refreshGlobal(){try{const s=await api('/api/stats');$('#hFees').textContent=fmt(s.fees.holders,4)+' SOL'}catch(e){}}
 refreshGlobal();setInterval(refreshGlobal,20000);
